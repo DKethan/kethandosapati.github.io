@@ -1,18 +1,58 @@
 // Mobile menu toggle
 const menuToggle = document.getElementById('mobile-menu');
 const navLinks = document.querySelector('.nav-links');
+const body = document.body;
 
-menuToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('active');
-  menuToggle.classList.toggle('active');
+// Debounce function for performance
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Function to toggle menu state
+function toggleMenu() {
+    const isOpen = navLinks.classList.contains('active');
+    navLinks.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+    body.classList.toggle('menu-open', !isOpen);
+}
+
+// Mobile menu handlers
+menuToggle?.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleMenu();
 });
 
 // Close mobile menu when clicking a link
 document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('active');
-    menuToggle.classList.remove('active');
-  });
+    link.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) {
+            toggleMenu();
+        }
+    });
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (navLinks.classList.contains('active') && 
+        !navLinks.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+        toggleMenu();
+    }
+});
+
+// Close mobile menu on window resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+        toggleMenu();
+    }
 });
 
 // Project tabs functionality
@@ -31,7 +71,7 @@ if (tabButtons.length > 0) {
       
       // Show corresponding content
       const tabId = button.getAttribute('data-tab');
-      document.getElementById(`${tabId}-content`).classList.add('active');
+      document.getElementById(`${tabId}-content`)?.classList.add('active');
     });
   });
 }
@@ -40,9 +80,10 @@ if (tabButtons.length > 0) {
 const copyButtons = document.querySelectorAll('.copy-btn');
 if (copyButtons.length > 0) {
   copyButtons.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
       const textToCopy = button.getAttribute('data-clipboard-text');
-      navigator.clipboard.writeText(textToCopy).then(() => {
+      try {
+        await navigator.clipboard.writeText(textToCopy);
         // Show copied feedback
         const originalHTML = button.innerHTML;
         button.innerHTML = '<i class="fas fa-check"></i>';
@@ -53,46 +94,50 @@ if (copyButtons.length > 0) {
           button.innerHTML = originalHTML;
           button.style.color = '';
         }, 2000);
-      });
+      } catch (err) {
+        console.error('Failed to copy text:', err);
+      }
     });
   });
 }
 
-// Navbar scroll effect
+// Navbar scroll effect with performance optimization
+const navbar = document.querySelector('.navbar');
+const handleScroll = debounce(() => {
+  requestAnimationFrame(() => {
+    navbar?.classList.toggle('scrolled', window.scrollY > 50);
+  });
+}, 16);
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-  const navbar = document.querySelector('.navbar');
-  if (window.scrollY > 50) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
-});
+window.addEventListener('scroll', handleScroll);
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
     e.preventDefault();
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-      behavior: 'smooth'
-    });
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
   });
 });
 
-// Animation on scroll
-const animateOnScroll = () => {
-  const elements = document.querySelectorAll('.fade-in, .slide-in');
-
-  elements.forEach(element => {
-    const elementPosition = element.getBoundingClientRect().top;
+// Animation on scroll with performance optimization
+const animateOnScroll = debounce(() => {
+  requestAnimationFrame(() => {
+    const elements = document.querySelectorAll('.fade-in, .slide-in');
     const screenPosition = window.innerHeight / 1.3;
 
-    if (elementPosition < screenPosition) {
-      element.classList.add('animate');
-    }
+    elements.forEach(element => {
+      const elementPosition = element.getBoundingClientRect().top;
+      if (elementPosition < screenPosition) {
+        element.classList.add('animate');
+      }
+    });
   });
-};
+}, 16);
 
 window.addEventListener('scroll', animateOnScroll);
 window.addEventListener('load', animateOnScroll);

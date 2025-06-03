@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Copied and adapted from index head for consistent styling and SEO -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Head Container -->
+  <div id="head-container"></div>
 
+  <!-- Page-specific meta tags -->
   <title>Contact | Kethan Dosapati</title>
   <meta name="description" content="Get in touch with AI Engineer Kethan Dosapati.">
   <meta name="author" content="Kethan Dosapati">
@@ -41,78 +40,60 @@
 
 </head>
 <body>
-<!-- Navigation -->
-<nav class="navbar">
-  <div class="container">
-    <a href="index.html" class="logo">Kethan Dosapati</a>
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="experience.html">Experience</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-    </ul>
-  </div>
-</nav>
+  <!-- Header Container -->
+  <div id="header-container"></div>
 
-<!-- Contact Section -->
-<section class="section contact">
-  <div class="container">
-    <h2 class="section-title">GET IN TOUCH</h2>
+  <!-- Main Content -->
+  <!-- Contact Section -->
+  <section class="section contact">
+    <div class="container">
+      <h2 class="section-title">GET IN TOUCH</h2>
 
-    <div class="contact-grid fade-in">
+      <div class="contact-grid fade-in">
 
-      <!-- Left: Contact Info -->
-      <div class="contact-info-box">
-        <h3>Reach Out</h3>
-        <p class="contact-description">Whether it's a collaboration, opportunity, or a casual hello, I'm just a message away!</p>
+        <!-- Left: Contact Info -->
+        <div class="contact-info-box">
+          <h3>Reach Out</h3>
+          <p class="contact-description">Whether it's a collaboration, opportunity, or a casual hello, I'm just a message away!</p>
 
-        <div class="contact-detail">
-          <i class="fas fa-envelope"></i>
-          <span>kethandosapati@gmail.com</span>
-        </div>
-        <div class="contact-detail">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>New Jersey, USA</span>
+          <div class="contact-detail">
+            <i class="fas fa-envelope"></i>
+            <span>kethandosapati@gmail.com</span>
+          </div>
+          <div class="contact-detail">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>New Jersey, USA</span>
+          </div>
+
+          <div class="contact-socials">
+            <a href="https://github.com/DKethan" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://medium.com/@kethandosapati" target="_blank" title="Medium"><i class="fab fa-medium"></i></a>
+            <a href="https://huggingface.co/DKethan" target="_blank"><i class="fas fa-robot"></i></a>
+          </div>
         </div>
 
-        <div class="contact-socials">
-          <a href="https://github.com/DKethan" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-          <a href="https://medium.com/@kethandosapati" target="_blank" title="Medium"><i class="fab fa-medium"></i></a>
-          <a href="https://huggingface.co/DKethan" target="_blank"><i class="fas fa-robot"></i></a>
+        <!-- Right: Form -->
+        <div class="contact-form-box">
+          <form action="https://formspree.io/f/xvgazbld" method="POST" class="contact-form">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="text" name="subject" placeholder="Subject (optional)">
+            <textarea name="message" placeholder="Type your message..." rows="5" required></textarea>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
         </div>
+
       </div>
-
-      <!-- Right: Form -->
-      <div class="contact-form-box">
-        <form action="https://formspree.io/f/xvgazbld" method="POST" class="contact-form">
-          <input type="text" name="name" placeholder="Full Name" required>
-          <input type="email" name="email" placeholder="Email Address" required>
-          <input type="text" name="subject" placeholder="Subject (optional)">
-          <textarea name="message" placeholder="Type your message..." rows="5" required></textarea>
-          <button type="submit" class="btn btn-primary">Send Message</button>
-        </form>
-      </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- Footer Container -->
+  <div id="footer-container"></div>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <p>© 2025 KETHAN DOSAPATI. ALL RIGHTS RESERVED.</p>
-    <div class="footer-links">
-      <a href="index.html">HOME</a>
-      <a href="projects.html">PROJECTS</a>
-      <a href="experience.html">EXPERIENCE</a>
-      <a href="contact.html">CONTACT</a>
-    </div>
-  </div>
-</footer>
-
-<script src="assets/script.js"></script>
+  <!-- Load Components -->
+  <script src="/components/loadComponents.js"></script>
+  <script src="/assets/script.js"></script>
+  <script src="/assets/theme.js"></script>
 </body>
 </html>

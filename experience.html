@@ -45,89 +45,71 @@
   </script>
 </head>
 <body>
-<!-- Navigation -->
-<nav class="navbar">
-  <div class="container">
-    <a href="index.html" class="logo">Kethan Dosapati</a>
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="experience.html" class="active">Experience</a></li>
-      <li><a href="tech-stack.html">Tech Stack</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </div>
-</nav>
+  <!-- Header Container -->
+  <div id="header-container"></div>
 
-<!-- Experience Section -->
-<section class="section experience">
-  <div class="container">
-    <h2 class="section-title">PROFESSIONAL EXPERIENCE</h2>
+  <!-- Main Content -->
+  <!-- Experience Section -->
+  <section class="section experience">
+    <div class="container">
+      <h2 class="section-title">PROFESSIONAL EXPERIENCE</h2>
 
-    <div class="experience-grid">
+      <div class="experience-grid">
 
-      <!-- Datalabs -->
-      <div class="exp-card fade-in">
-        <div class="exp-header">
-          <h3>Datalabs Corporation</h3>
-          <span class="exp-meta">2024 · Hyderabad, India</span>
-          <p class="exp-role">Data Engineer Associate (AI Engineer)</p>
+        <!-- Datalabs -->
+        <div class="exp-card fade-in">
+          <div class="exp-header">
+            <h3>Datalabs Corporation</h3>
+            <span class="exp-meta">2024 · Hyderabad, India</span>
+            <p class="exp-role">Data Engineer Associate (AI Engineer)</p>
+          </div>
+          <ul class="exp-list">
+            <li> Built a GenAI agent to aggregate news from YouTube & newspapers with a 29-second response time</li>
+            <li> Designed a framework converting Excel sheets and other files into queryable chatbots</li>
+            <li> Implemented pipelines for scalable document classification & analysis</li>
+          </ul>
         </div>
-        <ul class="exp-list">
-          <li> Built a GenAI agent to aggregate news from YouTube & newspapers with a 29-second response time</li>
-          <li> Designed a framework converting Excel sheets and other files into queryable chatbots</li>
-          <li> Implemented pipelines for scalable document classification & analysis</li>
-        </ul>
-      </div>
 
-      <!-- Skil.AI -->
-      <div class="exp-card fade-in">
-        <div class="exp-header">
-          <h3>Skil.AI</h3>
-          <span class="exp-meta">2023 – 2024 · Visakhapatnam, India</span>
-          <p class="exp-role">Machine Learning Intern</p>
+        <!-- Skil.AI -->
+        <div class="exp-card fade-in">
+          <div class="exp-header">
+            <h3>Skil.AI</h3>
+            <span class="exp-meta">2023 – 2024 · Visakhapatnam, India</span>
+            <p class="exp-role">Machine Learning Intern</p>
+          </div>
+          <ul class="exp-list">
+            <li>Built 100% accurate address verifier using OpenAI APIs</li>
+            <li> Created AI agents to categorize dev/ML/frontend... issues, boosting resolution speed by 50%</li>
+            <li> Designed GenAI tools to access archived notes for 60% faster problem solving</li>
+            <li> Contributed to "Chat with Your PDFs" — AI-powered Q&A over documents</li>
+            <li> Contributed development to a no-code AI chatbot platform integrating OpenAPI specs and flows</li>
+          </ul>
         </div>
-        <ul class="exp-list">
-          <li>Built 100% accurate address verifier using OpenAI APIs</li>
-          <li> Created AI agents to categorize dev/ML/frontend... issues, boosting resolution speed by 50%</li>
-          <li> Designed GenAI tools to access archived notes for 60% faster problem solving</li>
-          <li> Contributed to “Chat with Your PDFs” — AI-powered Q&A over documents</li>
-          <li> Contributed development to a no-code AI chatbot platform integrating OpenAPI specs and flows</li>
-        </ul>
-      </div>
 
-      <!-- D Studios -->
-      <div class="exp-card fade-in">
-        <div class="exp-header">
-          <h3>D Studios</h3>
-          <span class="exp-meta">2024 – Present · Founder</span>
-          <p class="exp-role">Creative AI Lead</p>
+        <!-- D Studios -->
+        <div class="exp-card fade-in">
+          <div class="exp-header">
+            <h3>D Studios</h3>
+            <span class="exp-meta">2024 – Present · Founder</span>
+            <p class="exp-role">Creative AI Lead</p>
+          </div>
+          <ul class="exp-list">
+            <li> Built an AI bot for @filmicharmony to tag OTT content (Netflix, Prime, Telugu)</li>
+            <li> Produced anime edits & viral shorts across Instagram and YouTube</li>
+            <li> Built agent that converts OTT updates into voiceover videos with subtitles</li>
+          </ul>
         </div>
-        <ul class="exp-list">
-          <li> Built an AI bot for @filmicharmony to tag OTT content (Netflix, Prime, Telugu)</li>
-          <li> Produced anime edits & viral shorts across Instagram and YouTube</li>
-          <li> Built agent that converts OTT updates into voiceover videos with subtitles</li>
-        </ul>
-      </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <p>© 2025 KETHAN DOSAPATI. ALL RIGHTS RESERVED.</p>
-    <div class="footer-links">
-      <a href="index.html">HOME</a>
-      <a href="projects.html">PROJECTS</a>
-      <a href="experience.html">EXPERIENCE</a>
-      <a href="contact.html">CONTACT</a>
-    </div>
-  </div>
-</footer>
+  <!-- Footer Container -->
+  <div id="footer-container"></div>
 
-<script src="assets/script.js"></script>
+  <!-- Load Components -->
+  <script src="/components/loadComponents.js"></script>
+  <script src="assets/script.js"></script>
+  <script src="assets/theme.js"></script>
 </body>
 </html>
