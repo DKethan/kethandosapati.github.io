@@ -1,10 +1,47 @@
-// Mobile menu toggle
-const menuToggle = document.getElementById('mobile-menu');
-const navLinks = document.querySelector('.nav-links');
+// Load HTML components
+document.addEventListener('DOMContentLoaded', function() {
+  // Load navigation component
+  const navPlaceholder = document.getElementById('navigation-placeholder');
+  if (navPlaceholder) {
+    fetch('components/navigation.html')
+      .then(response => response.text())
+      .then(data => {
+        navPlaceholder.innerHTML = data;
 
-menuToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('active');
-  menuToggle.classList.toggle('active');
+        // Initialize mobile menu toggle after navigation is loaded
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuToggle && navLinks) {
+          menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+          });
+        }
+
+        // Set active class for current page
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const navLinks2 = document.querySelectorAll('.nav-links a');
+        navLinks2.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href === currentPage) {
+            link.classList.add('active');
+          }
+        });
+      })
+      .catch(error => console.error('Error loading navigation:', error));
+  }
+
+  // Load footer component
+  const footerPlaceholder = document.getElementById('footer-placeholder');
+  if (footerPlaceholder) {
+    fetch('components/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        footerPlaceholder.innerHTML = data;
+      })
+      .catch(error => console.error('Error loading footer:', error));
+  }
 });
 
 // Close mobile menu when clicking a link
@@ -25,10 +62,10 @@ if (tabButtons.length > 0) {
       // Remove active class from all buttons and contents
       tabButtons.forEach(btn => btn.classList.remove('active'));
       tabContents.forEach(content => content.classList.remove('active'));
-      
+
       // Add active class to clicked button
       button.classList.add('active');
-      
+
       // Show corresponding content
       const tabId = button.getAttribute('data-tab');
       document.getElementById(`${tabId}-content`).classList.add('active');
@@ -47,7 +84,7 @@ if (copyButtons.length > 0) {
         const originalHTML = button.innerHTML;
         button.innerHTML = '<i class="fas fa-check"></i>';
         button.style.color = 'var(--success)';
-        
+
         // Reset after 2 seconds
         setTimeout(() => {
           button.innerHTML = originalHTML;
@@ -96,3 +133,33 @@ const animateOnScroll = () => {
 
 window.addEventListener('scroll', animateOnScroll);
 window.addEventListener('load', animateOnScroll);
+
+// Auto-update copyright year
+document.addEventListener('DOMContentLoaded', function() {
+  const copyrightYearElement = document.getElementById('copyright-year');
+  if (copyrightYearElement) {
+    copyrightYearElement.textContent = new Date().getFullYear();
+  }
+});
+
+// Scroll-to-top FAB
+const scrollToTopButton = document.getElementById('scroll-to-top');
+
+if (scrollToTopButton) {
+  // Show button after scrolling 600px
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 600) {
+      scrollToTopButton.classList.add('visible');
+    } else {
+      scrollToTopButton.classList.remove('visible');
+    }
+  });
+
+  // Scroll to top when clicked
+  scrollToTopButton.addEventListener('click', function() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
