@@ -35,34 +35,165 @@
   <div class="container">
     <h2 class="section-title">Tech Stack</h2>
 
-    <div class="tech-cards">
-      <!-- Programming Languages -->
-      <div class="tech-card"><i class="fab fa-python tech-icon"></i><span>Python</span></div>
-      <div class="tech-card"><i class="fab fa-js tech-icon"></i><span>JavaScript</span></div>
-      <div class="tech-card"><i class="fab fa-html5 tech-icon"></i><span>HTML5</span></div>
-      <div class="tech-card"><i class="fab fa-css3-alt tech-icon"></i><span>CSS3</span></div>
+    <style>
+      :root {
+        --accent-color: #4d8aff;
+        --card-bg: rgba(255, 255, 255, 0.07);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --tech-icon-size: 1.5rem;
+      }
+
+      .tech-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.75rem;
+        margin-top: 2rem;
+      }
+
+      .tech-category {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 1.75rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--card-border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Removed the ::before element that created blue lines */
+
+      .tech-category:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .tech-category h3 {
+        margin-top: 0;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1.25rem;
+        color: var(--accent-color);
+        letter-spacing: 0.5px;
+      }
+
+      .category-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .tech-card {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .tech-card:hover {
+        background: rgba(77, 138, 255, 0.1);
+        transform: translateX(3px);
+      }
+
+      .tech-icon {
+        font-size: var(--tech-icon-size);
+        color: var(--accent-color);
+        margin-right: 12px;
+        width: 24px;
+        text-align: center;
+      }
+
+      .tech-card span {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+
+      @media (max-width: 768px) {
+        .tech-categories {
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 1.25rem;
+        }
+
+        .tech-category {
+          padding: 1.25rem;
+        }
+      }
+    </style>
+
+    <div class="tech-categories">
+      <!-- Frontend -->
+      <div class="tech-category">
+        <h3>Frontend</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fab fa-js-square tech-icon"></i><span>JavaScript</span></div>
+          <div class="tech-card"><i class="fab fa-html5 tech-icon"></i><span>HTML5</span></div>
+          <div class="tech-card"><i class="fab fa-css3-alt tech-icon"></i><span>CSS3</span></div>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="tech-category">
+        <h3>Backend</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fab fa-python tech-icon"></i><span>Python</span></div>
+        </div>
+      </div>
+
+      <!-- AI Platforms -->
+      <div class="tech-category">
+        <h3>AI Platforms</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fas fa-robot tech-icon"></i><span>OpenAI</span></div>
+          <div class="tech-card"><i class="fab fa-google tech-icon"></i><span>Gemini</span></div>
+          <div class="tech-card"><i class="fas fa-search tech-icon"></i><span>Deep Seek</span></div>
+        </div>
+      </div>
 
       <!-- AI Tools -->
-      <div class="tech-card"><i class="fas fa-robot tech-icon"></i><span>OpenAI</span></div>
-      <div class="tech-card"><i class="fas fa-brain tech-icon"></i><span>Gemini</span></div>
-      <div class="tech-card"><i class="fas fa-heart tech-icon"></i><span>Lovable AI</span></div>
-      <div class="tech-card"><i class="fas fa-calendar-alt tech-icon"></i><span>Junie AI</span></div>
-      <div class="tech-card"><i class="fas fa-comment-alt tech-icon"></i><span>AI Chat</span></div>
-      <div class="tech-card"><i class="fas fa-terminal tech-icon"></i><span>Cursor AI</span></div>
-      <div class="tech-card"><i class="fas fa-code tech-icon"></i><span>Codex</span></div>
-      <div class="tech-card"><i class="fab fa-github tech-icon"></i><span>GitHub</span></div>
-      <div class="tech-card"><i class="fas fa-video tech-icon"></i><span>Veo</span></div>
-      <div class="tech-card"><i class="fas fa-water tech-icon"></i><span>Flow</span></div>
+      <div class="tech-category">
+        <h3>AI Tools</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fas fa-heart tech-icon"></i><span>Lovable AI</span></div>
+          <div class="tech-card"><i class="fas fa-calendar-alt tech-icon"></i><span>Junie AI</span></div>
+          <div class="tech-card"><i class="fas fa-comment-dots tech-icon"></i><span>AI Chat</span></div>
+          <div class="tech-card"><i class="fas fa-terminal tech-icon"></i><span>Cursor AI</span></div>
+          <div class="tech-card"><i class="fas fa-code tech-icon"></i><span>Codex</span></div>
+        </div>
+      </div>
+
+      <!-- AI Tools for Media -->
+      <div class="tech-category">
+        <h3>AI Media Tools</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fas fa-video tech-icon"></i><span>Veo</span></div>
+          <div class="tech-card"><i class="fas fa-wave-square tech-icon"></i><span>Flow</span></div>
+        </div>
+      </div>
 
       <!-- Development Tools -->
-      <div class="tech-card"><i class="fas fa-code tech-icon"></i><span>JetBrains</span></div>
-      <div class="tech-card"><i class="fab fa-python tech-icon"></i><span>PyCharm</span></div>
-      <div class="tech-card"><i class="fab fa-js tech-icon"></i><span>WebStorm</span></div>
+      <div class="tech-category">
+        <h3>Development Tools</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fas fa-tools tech-icon"></i><span>JetBrains</span></div>
+          <div class="tech-card"><i class="fab fa-python tech-icon"></i><span>PyCharm</span></div>
+          <div class="tech-card"><i class="fab fa-js tech-icon"></i><span>WebStorm</span></div>
+          <div class="tech-card"><i class="fab fa-github tech-icon"></i><span>GitHub</span></div>
+        </div>
+      </div>
 
       <!-- Cloud Services -->
-      <div class="tech-card"><i class="fab fa-aws tech-icon"></i><span>AWS Bedrock</span></div>
-      <div class="tech-card"><i class="fab fa-aws tech-icon"></i><span>AWS Lambda</span></div>
-      <div class="tech-card"><i class="fab fa-google tech-icon"></i><span>Google Cloud</span></div>
+      <div class="tech-category">
+        <h3>Cloud Services</h3>
+        <div class="category-cards">
+          <div class="tech-card"><i class="fab fa-aws tech-icon"></i><span>AWS Bedrock</span></div>
+          <div class="tech-card"><i class="fas fa-server tech-icon"></i><span>AWS Lambda</span></div>
+          <div class="tech-card"><i class="fas fa-cloud tech-icon"></i><span>AWS EC2</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
