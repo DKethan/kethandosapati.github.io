@@ -20,12 +20,15 @@
 <nav class="navbar">
   <div class="container">
     <a href="index.html" class="logo">KD</a>
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-    <ul class="nav-links">
+    <button class="menu-toggle" id="mobile-menu" aria-expanded="false" aria-controls="nav-links-list">
+      <span class="visually-hidden">Open navigation menu</span>
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links-list">
       <li><a href="index.html" id="nav-home">Home</a></li>
       <li><a href="projects.html" id="nav-projects">Projects</a></li>
       <li><a href="experience.html" id="nav-experience">Experience</a></li>
-      <li><a href="tech-stack.html" id="nav-tech-stack">Tech Stack</a></li>
+      <li><a href="tech-stack.html" id="nav-tech-stack" aria-current="page">Tech Stack</a></li>
       <li><a href="contact.html" id="nav-contact">Contact</a></li>
     </ul>
   </div>
@@ -34,95 +37,6 @@
 <section id="tech-stack" class="section tech-stack">
   <div class="container">
     <h2 class="section-title">Tech Stack</h2>
-
-    <style>
-      :root {
-        --accent-color: #4d8aff;
-        --card-bg: rgba(255, 255, 255, 0.07);
-        --card-border: rgba(255, 255, 255, 0.1);
-        --tech-icon-size: 1.5rem;
-      }
-
-      .tech-categories {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.75rem;
-        margin-top: 2rem;
-      }
-
-      .tech-category {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 1.75rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid var(--card-border);
-        position: relative;
-        overflow: hidden;
-      }
-
-      /* Removed the ::before element that created blue lines */
-
-      .tech-category:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-      }
-
-      .tech-category h3 {
-        margin-top: 0;
-        padding-bottom: 0.75rem;
-        margin-bottom: 1.25rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 1.25rem;
-        color: var(--accent-color);
-        letter-spacing: 0.5px;
-      }
-
-      .category-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-      }
-
-      .tech-card {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 8px;
-        transition: all 0.2s ease;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-
-      .tech-card:hover {
-        background: rgba(77, 138, 255, 0.1);
-        transform: translateX(3px);
-      }
-
-      .tech-icon {
-        font-size: var(--tech-icon-size);
-        color: var(--accent-color);
-        margin-right: 12px;
-        width: 24px;
-        text-align: center;
-      }
-
-      .tech-card span {
-        font-weight: 500;
-        letter-spacing: 0.3px;
-      }
-
-      @media (max-width: 768px) {
-        .tech-categories {
-          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-          gap: 1.25rem;
-        }
-
-        .tech-category {
-          padding: 1.25rem;
-        }
-      }
-    </style>
 
     <div class="tech-categories">
       <!-- Frontend -->
@@ -226,17 +140,17 @@
       </div>
 
       <div class="social-links">
-        <a href="https://github.com/DKethan" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="https://pypi.org/user/dkethan/" target="_blank"><i class="fab fa-python"></i></a>
-        <a href="https://huggingface.co/DKethan" target="_blank"><i class="fas fa-brain"></i></a>
-        <a href="https://share.streamlit.io/user/dkethan" target="_blank"><i class="fas fa-chart-line"></i></a>
-        <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        <a href="https://medium.com/@kethandosapati" target="_blank"><i class="fab fa-medium-m"></i></a>
-        <a href="https://www.instagram.com/kethandosapati/" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://linktr.ee/kethandosapati" target="_blank"><i class="fas fa-link"></i></a>
-        <a href="https://www.instagram.com/filmicharmony/" target="_blank"><i class="fas fa-film"></i></a>
-        <a href="https://www.youtube.com/channel/UCZjJz4iOz0rrOAl9l2_hz7Q" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://vsco.co/thekethan/gallery" target="_blank"><i class="fas fa-camera-retro"></i></a>
+        <a href="https://github.com/DKethan" target="_blank" aria-label="Kethan's GitHub Profile"><i class="fab fa-github"></i></a>
+        <a href="https://pypi.org/user/dkethan/" target="_blank" aria-label="Kethan's PyPI Profile"><i class="fab fa-python"></i></a>
+        <a href="https://huggingface.co/DKethan" target="_blank" aria-label="Kethan's Hugging Face Profile"><i class="fas fa-brain"></i></a>
+        <a href="https://share.streamlit.io/user/dkethan" target="_blank" aria-label="Kethan's Streamlit Share Profile"><i class="fas fa-chart-line"></i></a>
+        <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank" aria-label="Kethan's LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://medium.com/@kethandosapati" target="_blank" aria-label="Kethan's Medium Profile"><i class="fab fa-medium-m"></i></a>
+        <a href="https://www.instagram.com/kethandosapati/" target="_blank" aria-label="Kethan's Instagram Profile"><i class="fab fa-instagram"></i></a>
+        <a href="https://linktr.ee/kethandosapati" target="_blank" aria-label="Kethan's Linktree Profile"><i class="fas fa-link"></i></a>
+        <a href="https://www.instagram.com/filmicharmony/" target="_blank" aria-label="FilmiHarmony Instagram Profile"><i class="fas fa-film"></i></a>
+        <a href="https://www.youtube.com/channel/UCZjJz4iOz0rrOAl9l2_hz7Q" target="_blank" aria-label="Kethan's YouTube Channel"><i class="fab fa-youtube"></i></a>
+        <a href="https://vsco.co/thekethan/gallery" target="_blank" aria-label="Kethan's VSCO Gallery"><i class="fas fa-camera-retro"></i></a>
       </div>
 
       <div class="footer-bottom">

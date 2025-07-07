@@ -122,9 +122,12 @@
 <nav class="navbar">
   <div class="container">
     <a href="index.html" class="logo">KD</a>
-    <div class="menu-toggle" id="mobile-menu"><span></span><span></span><span></span></div>
-    <ul class="nav-links">
-      <li><a href="index.html" id="nav-home">Home</a></li>
+    <button class="menu-toggle" id="mobile-menu" aria-expanded="false" aria-controls="nav-links-list">
+      <span class="visually-hidden">Open navigation menu</span>
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links-list">
+      <li><a href="index.html" id="nav-home" aria-current="page">Home</a></li>
       <li><a href="projects.html" id="nav-projects">Projects</a></li>
       <li><a href="experience.html" id="nav-experience">Experience</a></li>
       <li><a href="tech-stack.html" id="nav-tech-stack">Tech Stack</a></li>
@@ -246,17 +249,17 @@
       </div>
 
       <div class="social-links">
-        <a href="https://github.com/DKethan" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="https://pypi.org/user/dkethan/" target="_blank"><i class="fab fa-python"></i></a>
-        <a href="https://huggingface.co/DKethan" target="_blank"><i class="fas fa-brain"></i></a>
-        <a href="https://share.streamlit.io/user/dkethan" target="_blank"><i class="fas fa-chart-line"></i></a>
-        <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        <a href="https://medium.com/@kethandosapati" target="_blank"><i class="fab fa-medium-m"></i></a>
-        <a href="https://www.instagram.com/kethandosapati/" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://linktr.ee/kethandosapati" target="_blank"><i class="fas fa-link"></i></a>
-        <a href="https://www.instagram.com/filmicharmony/" target="_blank"><i class="fas fa-film"></i></a>
-        <a href="https://www.youtube.com/channel/UCZjJz4iOz0rrOAl9l2_hz7Q" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://vsco.co/thekethan/gallery" target="_blank"><i class="fas fa-camera-retro"></i></a>
+        <a href="https://github.com/DKethan" target="_blank" aria-label="Kethan's GitHub Profile"><i class="fab fa-github"></i></a>
+        <a href="https://pypi.org/user/dkethan/" target="_blank" aria-label="Kethan's PyPI Profile"><i class="fab fa-python"></i></a>
+        <a href="https://huggingface.co/DKethan" target="_blank" aria-label="Kethan's Hugging Face Profile"><i class="fas fa-brain"></i></a>
+        <a href="https://share.streamlit.io/user/dkethan" target="_blank" aria-label="Kethan's Streamlit Share Profile"><i class="fas fa-chart-line"></i></a>
+        <a href="https://www.linkedin.com/in/kethan-dosapati/" target="_blank" aria-label="Kethan's LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://medium.com/@kethandosapati" target="_blank" aria-label="Kethan's Medium Profile"><i class="fab fa-medium-m"></i></a>
+        <a href="https://www.instagram.com/kethandosapati/" target="_blank" aria-label="Kethan's Instagram Profile"><i class="fab fa-instagram"></i></a>
+        <a href="https://linktr.ee/kethandosapati" target="_blank" aria-label="Kethan's Linktree Profile"><i class="fas fa-link"></i></a>
+        <a href="https://www.instagram.com/filmicharmony/" target="_blank" aria-label="FilmiHarmony Instagram Profile"><i class="fas fa-film"></i></a>
+        <a href="https://www.youtube.com/channel/UCZjJz4iOz0rrOAl9l2_hz7Q" target="_blank" aria-label="Kethan's YouTube Channel"><i class="fab fa-youtube"></i></a>
+        <a href="https://vsco.co/thekethan/gallery" target="_blank" aria-label="Kethan's VSCO Gallery"><i class="fas fa-camera-retro"></i></a>
       </div>
 
       <div class="footer-bottom">

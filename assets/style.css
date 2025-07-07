@@ -8,6 +8,7 @@
   --light: #f8fafc;          /* Light color for contrast */
   --gray: #94a3b8;           /* Mid-gray */
   --success: #10b981;        /* Keep success color */
+  --danger: #dc3545;         /* Red for errors */
   --accent: #334155;         /* Accent color for highlights */
   --border: #2d3748;         /* Border color */
 }
@@ -1683,6 +1684,87 @@ section {
   border: 0;
 }
 
+/* Tech Stack Page Specific Styles */
+/* Ensure these variables are defined or adjust as needed if they conflict with global :root variables */
+/* For simplicity, I'm assuming they can be added here. If --accent-color etc. are meant to be different from global, they might need to be scoped to the .tech-stack section or body.tech-stack-page */
+.tech-stack .tech-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+  margin-top: 2rem;
+}
+
+.tech-stack .tech-category {
+  background: var(--card-bg, rgba(255, 255, 255, 0.07)); /* Fallback if --card-bg is not globally defined */
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1)); /* Fallback */
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-stack .tech-category:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.tech-stack .tech-category h3 {
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1.25rem;
+  color: var(--accent-color, #4d8aff); /* Fallback */
+  letter-spacing: 0.5px;
+}
+
+.tech-stack .category-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tech-stack .tech-card { /* Scoped to .tech-stack to avoid conflict with other .tech-card styles */
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tech-stack .tech-card:hover { /* Scoped */
+  background: rgba(77, 138, 255, 0.1);
+  transform: translateX(3px);
+}
+
+.tech-stack .tech-icon { /* Scoped */
+  font-size: var(--tech-icon-size, 1.5rem); /* Fallback */
+  color: var(--accent-color, #4d8aff); /* Fallback */
+  margin-right: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.tech-stack .tech-card span { /* Scoped */
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 768px) {
+  .tech-stack .tech-categories {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .tech-stack .tech-category {
+    padding: 1.25rem;
+  }
+}
+
 /* Light theme support */
 body.light-theme .footer-2025-x {
   --footer-bg: rgba(248, 250, 252, 0.9);
@@ -1692,4 +1774,34 @@ body.light-theme .footer-2025-x {
   --glow-color: rgba(30, 64, 175, 0.2);
   --text-primary: #0f172a;
   --text-secondary: #475569;
+}
+
+/* ===== Animation Classes ===== */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+.slide-in {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap; /* added line */
+  border: 0;
 }
