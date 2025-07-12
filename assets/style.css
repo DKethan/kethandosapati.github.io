@@ -354,13 +354,15 @@ section {
   background-color: var(--dark-light);
 }
 
-.about-content {
+.about-content p {
+  font-size: 1.15rem;
+  line-height: 1.7;
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
-}
 
-.social-links {
+
+  .social-links {
   display: flex;
   justify-content: center;
   gap: 20px;
