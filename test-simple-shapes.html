@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Shapes Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #1a1a1a;
+      color: white;
+    }
+    
+    .test-container {
+      width: 100%;
+      height: 500px;
+      background: #333;
+      border-radius: 8px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "gsap": "https://unpkg.com/gsap@3.12.2/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Simple Shapes Test</h1>
+  
+  <div class="test-container" id="shapes-container"></div>
+  
+  <script type="module">
+    import * as THREE from 'three';
+    import { gsap } from 'gsap';
+    
+    let scene, camera, renderer;
+    
+    async function initTest() {
+      try {
+        console.log('Starting simple test...');
+        
+        // Setup Three.js scene
+        scene = new THREE.Scene();
+        const container = document.getElementById('shapes-container');
+        
+        camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0, 30);
+        
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setClearColor(0x000000, 0);
+        
+        container.appendChild(renderer.domElement);
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 10, 5);
+        scene.add(directionalLight);
+        
+        // Create simple shapes
+        const shapes = [];
+        const shapeTypes = [
+          { geo: () => new THREE.IcosahedronGeometry(2, 1), color: 0xff6b6b },
+          { geo: () => new THREE.DodecahedronGeometry(2, 0), color: 0x4ecdc4 },
+          { geo: () => new THREE.SphereGeometry(2, 32, 24), color: 0x45b7d1 },
+          { geo: () => new THREE.BoxGeometry(2, 2, 2), color: 0x96ceb4 },
+          { geo: () => new THREE.TorusGeometry(2, 0.6, 16, 32), color: 0xfeca57 }
+        ];
+        
+        for (let i = 0; i < 8; i++) {
+          const shapeType = shapeTypes[i % shapeTypes.length];
+          const geometry = shapeType.geo();
+          const material = new THREE.MeshPhongMaterial({
+            color: shapeType.color,
+            transparent: true,
+            opacity: 0.8
+          });
+          
+          const mesh = new THREE.Mesh(geometry, material);
+          
+          // Position shapes
+          const angle = (i / 8) * Math.PI * 2;
+          const radius = 10 + Math.random() * 15;
+          mesh.position.set(
+            Math.cos(angle) * radius,
+            (Math.random() - 0.5) * 10,
+            Math.sin(angle) * radius
+          );
+          
+          mesh.rotation.set(
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2
+          );
+          
+          scene.add(mesh);
+          shapes.push(mesh);
+          
+          // Animate
+          gsap.to(mesh.rotation, {
+            duration: 5 + Math.random() * 5,
+            x: mesh.rotation.x + Math.PI * 2,
+            y: mesh.rotation.y + Math.PI * 2,
+            z: mesh.rotation.z + Math.PI * 2,
+            ease: "none",
+            repeat: -1
+          });
+          
+          gsap.to(mesh.position, {
+            duration: 3 + Math.random() * 4,
+            y: mesh.position.y + (Math.random() - 0.5) * 8,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true
+          });
+        }
+        
+        // Start animation loop
+        function animate() {
+          requestAnimationFrame(animate);
+          renderer.render(scene, camera);
+        }
+        animate();
+        
+        console.log('Simple test successful!');
+        
+      } catch (error) {
+        console.error('Simple test failed:', error);
+      }
+    }
+    
+    initTest();
+  </script>
+</body>
+</html>

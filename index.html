@@ -50,8 +50,21 @@
 
   <!-- Styles & Fonts -->
   <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/css/3d-enhancements.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  
+  <!-- 3D Libraries -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+        "gsap": "https://unpkg.com/gsap@3.12.2/index.js",
+        "lenis": "https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.mjs"
+      }
+    }
+  </script>
 
   <!-- Structured Data (JSON-LD) -->
   <script type="application/ld+json">
@@ -118,15 +131,16 @@
   </script>
 </head>
 <body>
+<!-- 3D Loading Indicator -->
+<div class="loading-indicator" style="display: none;">
+  <div class="loading-progress"></div>
+</div>
+
 <!-- Navigation Placeholder -->
 <div id="navbar-placeholder"></div>
 
 <!-- Hero Section -->
 <section class="hero">
-  <div class="geometric-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-  </div>
   <div class="container">
     <div class="hero-content">
       <h1 class="hero-title gradient-text">KETHAN DOSAPATI</h1>
@@ -216,4 +230,5 @@
 
 <script src="assets/components.js"></script>
 <script src="assets/script.js"></script>
+<script type="module" src="assets/js/3d-integration.js"></script>
 </body>

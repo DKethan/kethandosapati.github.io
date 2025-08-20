@@ -1,0 +1,24 @@
+{
+  "name": "kethan-portfolio-3d",
+  "version": "1.0.0",
+  "description": "3D Enhanced Portfolio for Kethan Dosapati",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python -m http.server 8000"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "gsap": "^3.12.2",
+    "lenis": "^1.0.42"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": ["portfolio", "3d", "threejs", "webgl", "ai-engineer"],
+  "author": "Kethan Dosapati",
+  "license": "MIT"
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D System Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #1a1a1a;
+      color: white;
+    }
+    
+    .test-container {
+      width: 100%;
+      height: 400px;
+      background: #333;
+      border-radius: 8px;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .info {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+    
+    .status.success { background: #4caf50; }
+    .status.error { background: #f44336; }
+    .status.warning { background: #ff9800; }
+  </style>
+  
+  <!-- 3D Libraries -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+        "gsap": "https://unpkg.com/gsap@3.12.2/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>3D Portfolio System Test</h1>
+  
+  <div class="info">
+    <h3>System Status</h3>
+    <div id="webgl-status" class="status">Checking WebGL support...</div>
+    <div id="3d-core-status" class="status">Initializing 3D Core...</div>
+    <div id="performance-status" class="status">Starting performance monitor...</div>
+  </div>
+  
+  <div class="info">
+    <h3>Performance Metrics</h3>
+    <div id="fps">FPS: --</div>
+    <div id="quality">Quality Level: --</div>
+    <div id="memory">Memory Usage: --</div>
+  </div>
+  
+  <div class="test-container" id="test-scene">
+    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0;">
+      3D Test Scene will appear here
+    </p>
+  </div>
+  
+  <div class="info">
+    <h3>Hero Scene Test</h3>
+    <div id="hero-status" class="status">Testing HeroScene...</div>
+  </div>
+  
+  <div class="test-container" id="hero-test-scene">
+    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0;">
+      Hero Scene Test will appear here
+    </p>
+  </div>
+  
+  <script type="module">
+    import * as THREE from 'three';
+    
+    async function testSystem() {
+      try {
+        // Test WebGL support
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+        
+        if (gl) {
+          document.getElementById('webgl-status').textContent = 'WebGL supported ✓';
+          document.getElementById('webgl-status').className = 'status success';
+        } else {
+          document.getElementById('webgl-status').textContent = 'WebGL not supported ✗';
+          document.getElementById('webgl-status').className = 'status error';
+          return;
+        }
+        
+        // Test 3D Core import
+        const { default: ThreeDCore } = await import('./assets/js/3d/3DCore.js');
+        document.getElementById('3d-core-status').textContent = '3D Core loaded ✓';
+        document.getElementById('3d-core-status').className = 'status success';
+        
+        // Initialize 3D Core
+        await ThreeDCore.initialize();
+        ThreeDCore.start();
+        
+        // Create test scene
+        const container = document.getElementById('test-scene');
+        const sceneId = ThreeDCore.createScene(container, 'test', {
+          fov: 75,
+          near: 0.1,
+          far: 1000
+        });
+        
+        if (sceneId) {
+          // Add a simple test object
+          const scene = ThreeDCore.getScene(sceneId);
+          if (scene && scene.scene) {
+            // Create a rotating cube
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.scene.add(cube);
+            
+            // Position camera
+            scene.camera.position.z = 5;
+            
+            // Add rotation animation
+            const animate = () => {
+              cube.rotation.x += 0.01;
+              cube.rotation.y += 0.01;
+              requestAnimationFrame(animate);
+            };
+            animate();
+          }
+        }
+        
+        // Update performance metrics
+        setInterval(() => {
+          const metrics = ThreeDCore.getPerformanceMetrics();
+          if (metrics) {
+            document.getElementById('fps').textContent = `FPS: ${metrics.fps.toFixed(1)}`;
+            document.getElementById('quality').textContent = `Quality Level: ${metrics.qualityLevel}`;
+            
+            if (metrics.memoryUsage && metrics.memoryUsage.used) {
+              const memoryMB = (metrics.memoryUsage.used / 1024 / 1024).toFixed(1);
+              document.getElementById('memory').textContent = `Memory Usage: ${memoryMB}MB`;
+            }
+          }
+        }, 1000);
+        
+        document.getElementById('performance-status').textContent = 'Performance monitor active ✓';
+        document.getElementById('performance-status').className = 'status success';
+        
+        // Test HeroScene specifically
+        await testHeroScene();
+        
+      } catch (error) {
+        console.error('Test failed:', error);
+        document.getElementById('3d-core-status').textContent = `3D Core failed: ${error.message}`;
+        document.getElementById('3d-core-status').className = 'status error';
+      }
+    }
+    
+    async function testHeroScene() {
+      try {
+        document.getElementById('hero-status').textContent = 'Creating HeroScene...';
+        document.getElementById('hero-status').className = 'status warning';
+        
+        // Import HeroScene
+        const { default: HeroScene } = await import('./assets/js/3d/HeroScene.js');
+        
+        // Create hero scene container
+        const heroContainer = document.getElementById('hero-test-scene');
+        
+        // Initialize HeroScene
+        const heroScene = new HeroScene(heroContainer, {
+          fov: 75,
+          near: 0.1,
+          far: 1000
+        });
+        
+        // Start hero scene animation loop
+        function animateHero() {
+          heroScene.update(16.67); // ~60fps
+          heroScene.render();
+          requestAnimationFrame(animateHero);
+        }
+        animateHero();
+        
+        document.getElementById('hero-status').textContent = 'HeroScene running successfully ✓';
+        document.getElementById('hero-status').className = 'status success';
+        
+      } catch (error) {
+        console.error('HeroScene test failed:', error);
+        document.getElementById('hero-status').textContent = `HeroScene failed: ${error.message}`;
+        document.getElementById('hero-status').className = 'status error';
+      }
+    }
+    
+    // Start test when page loads
+    document.addEventListener('DOMContentLoaded', testSystem);
+  </script>
+</body>
+</html>
