@@ -1,0 +1,121 @@
+/* ===== Experience Page Styles ===== */
+
+.experience-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+/* Experience Card Styling */
+.exp-card {
+  background-color: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 0 0 transparent;
+  transition: all 0.3s ease;
+}
+
+.exp-card:hover {
+  border: 1px solid var(--accent-indigo);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+/* Experience Header */
+.exp-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.exp-meta {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.exp-role {
+  margin-top: 0.5rem;
+  color: var(--accent-indigo-light);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Experience List */
+.exp-list {
+  margin-top: 1.2rem;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.exp-list li {
+  margin-bottom: 0.9rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding-left: 0;
+  position: static;
+}
+
+/* Responsive Design for Experience Cards */
+@media (max-width: 768px) {
+  .experience-grid {
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .exp-card {
+    padding: 1.5rem;
+  }
+  
+  .exp-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .exp-meta {
+    font-size: 0.8rem;
+  }
+  
+  .exp-role {
+    font-size: 0.9rem;
+  }
+  
+  .exp-list {
+    padding-left: 1.2rem;
+  }
+  
+  .exp-list li {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .exp-card {
+    padding: 1.2rem;
+  }
+  
+  .exp-header h3 {
+    font-size: 1rem;
+  }
+  
+  .exp-meta {
+    font-size: 0.75rem;
+  }
+  
+  .exp-role {
+    font-size: 0.85rem;
+  }
+  
+  .exp-list {
+    padding-left: 1rem;
+  }
+  
+  .exp-list li {
+    font-size: 0.85rem;
+    margin-bottom: 0.7rem;
+  }
+}
