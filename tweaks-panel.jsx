@@ -193,6 +193,7 @@ function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
   // message — authors who want custom placement can post it directly
   // and pass noDeckControls to suppress this one.
   const hasDeckStage = React.useMemo(
+    // noinspection CssInvalidHtmlTagReference
     () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
     [],
   );
@@ -202,6 +203,7 @@ function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
   // copies still wait for the host's __omelette_rail_enabled postMessage —
   // same listener handles those.)
   const [railEnabled, setRailEnabled] = React.useState(
+    // noinspection CssInvalidHtmlTagReference
     () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled,
   );
   React.useEffect(() => {
