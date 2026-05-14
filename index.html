@@ -257,7 +257,8 @@
 
     /* Nav */
     .nav{position:fixed;inset:0 0 auto 0;z-index:50;padding:20px var(--pad-x);
-      display:flex;align-items:center;justify-content:space-between;mix-blend-mode:difference;color:#fff}
+      display:flex;align-items:center;justify-content:space-between;color:#fff;
+      background:rgba(10,10,10,.72);backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px)}
     .nav-mark{font-family:var(--mono),monospace;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1}
     .nav-links{display:flex;gap:28px;font-family:var(--mono),monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)}
     .nav-links a{position:relative}
@@ -478,7 +479,8 @@
     .about-prose strong{font-weight:400;font-style:italic;color:var(--accent)}
 
     /* ─────────── BEST WORK · FEATURE CARDS ─────────── */
-    .best-grid{display:flex;flex-direction:column;gap:36px}
+    .best-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    @media (max-width:760px){.best-grid{grid-template-columns:1fr}}
     .feature{
       position:relative;display:flex;flex-direction:column;
       border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--bg-card);
@@ -549,19 +551,19 @@
     /* ─────────── EXPERIENCE ─────────── */
     .timeline{position:relative;padding-left:0}
     .role{
-      display:grid;grid-template-columns:140px 1fr auto;gap:32px;
-      padding:36px 0;border-bottom:1px solid var(--line);align-items:start;
+      display:grid;grid-template-columns:140px 1fr;gap:32px;
+      padding:36px 0;border-bottom:1px solid var(--line);align-items:baseline;
       transition:padding .3s var(--ease);position:relative;
     }
-    .role-when{font-family:var(--mono),monospace;font-size:11px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.06em;padding-top:6px}
+    .role-when{font-family:var(--mono),monospace;font-size:11px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.06em}
     .role-when b{display:block;color:var(--fg);font-weight:500;font-size:12px;margin-bottom:4px}
     .role-main{display:flex;flex-direction:column;gap:14px}
-    .role-title{font-family:var(--serif),serif;font-size:clamp(24px,2.6vw,32px);font-weight:400;letter-spacing:-.01em;line-height:1.1;color:var(--fg)}
+    .role-title{font-family:var(--serif),serif;font-size:clamp(24px,2.6vw,32px);font-weight:400;letter-spacing:-.01em;line-height:1.1;color:var(--fg);margin:0}
     .role-title .org{font-style:italic;color:var(--fg-mute)}
     .role-body{font-size:15px;color:var(--fg-mute);max-width:62ch;line-height:1.55;margin:0}
     .role-stack{font-family:var(--mono),monospace;font-size:10.5px;color:var(--fg-dim);letter-spacing:.04em;display:flex;flex-wrap:wrap;gap:4px}
     .role-stack span{padding:3px 8px;border:1px solid var(--line);border-radius:4px}
-    .role-coord{font-family:var(--mono),monospace;font-size:10px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.1em;text-align:right;padding-top:8px;line-height:1.5}
+    .role-coord{font-family:var(--mono),monospace;font-size:10px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.1em;text-align:right;line-height:1.5}
     .role-coord b{color:var(--fg);font-weight:500;display:block}
     @media (max-width:880px){.role{grid-template-columns:1fr;gap:14px}.role-coord{text-align:left}}
 
@@ -573,9 +575,7 @@
       display:flex;flex-direction:column;gap:18px;transition:border-color .25s,transform .35s var(--ease-out);
       background:var(--bg-card);position:relative;overflow:hidden;
     }
-    .pkg:hover{border-color:var(--line-strong);transform:translateY(-3px)}
-    .pkg::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 80% 0%,var(--accent-soft),transparent 60%);opacity:0;transition:opacity .4s}
-    .pkg:hover::before{opacity:1}
+    .pkg:hover{transform:translateY(-3px)}
     .pkg>*{position:relative}
     .pkg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
     .pkg-title{font-family:var(--serif),serif;font-size:36px;font-weight:400;letter-spacing:-.02em;line-height:1}
@@ -597,7 +597,7 @@
     .copy-btn{font-family:var(--mono),monospace;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.08em;padding:4px 8px;border-radius:4px;border:1px solid #222;transition:all .2s}
     .copy-btn:hover{color:var(--accent);border-color:#444}
     .copy-btn.copied{color:#daff5d;border-color:#daff5d}
-    .pkg-metrics{display:flex;gap:32px;border-top:1px solid var(--line);padding-top:20px;flex-wrap:wrap}
+    .pkg-metrics{display:flex;gap:32px;flex-wrap:wrap}
     .pkg-metric{display:flex;flex-direction:column;gap:2px}
     .pkg-metric b{font-family:var(--serif),serif;font-size:28px;font-weight:400;letter-spacing:-.015em;line-height:1;color:var(--fg)}
     .pkg-metric span{font-family:var(--mono),monospace;font-size:10px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.08em}
@@ -636,7 +636,7 @@
     .contact-list a:hover .handle{color:var(--accent)}
 
     /* ─────────── FOOTER ─────────── */
-    .footer{padding:40px var(--pad-x);border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;font-family:var(--mono),monospace;font-size:10.5px;color:var(--fg-mute);letter-spacing:.08em;text-transform:uppercase}
+    .footer{padding:40px var(--pad-x);border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;font-family:var(--mono),monospace;font-size:10.5px;color:var(--fg-mute);letter-spacing:.08em;text-transform:uppercase}
     .footer b{color:var(--fg);font-weight:500}
     .footer .center{justify-self:center}
     .footer .right{justify-self:end;text-align:right}
@@ -705,9 +705,13 @@
       .feature-actions .btn{padding:11px 16px;font-size:10.5px}
       .row{padding:20px 0;gap:6px}
       .row-title{font-size:22px}
-      .pkg{padding:24px;border-radius:14px}
+      .pkg{padding:24px;border-radius:14px;min-width:0;overflow:hidden}
+      .pkg-head{flex-direction:column;align-items:flex-start;gap:12px}
+      .pkg-pill{align-self:flex-start;white-space:normal;font-size:9.5px;line-height:1.3;padding:5px 9px}
       .pkg-title{font-size:30px}
       .pkg-metrics{gap:20px}
+      .pkg-links{flex-wrap:wrap}
+      .pkg-links .clink{white-space:nowrap}
       .stack-cols{grid-template-columns:1fr}
       .stack-col{border-right:0;border-bottom:1px solid var(--line)}
       .stack-col:last-child{border-bottom:0}
@@ -806,6 +810,7 @@
         links: [
           ['Open live app','https://arogyamandiram.vercel.app/', 'primary'],
           ['GitHub','https://github.com/utsaaham/arogyamandiram'],
+          ['Walkthrough','https://youtu.be/y3xlGbLKqA4'],
         ],
         art: 'pulse',
       },
@@ -941,6 +946,7 @@
       ['PyPI','dkethan','https://pypi.org/user/dkethan/'],
       ['Hugging Face','DKethan','https://huggingface.co/DKethan'],
       ['Medium','@kethandosapati','https://medium.com/@kethandosapati'],
+      ['Instagram','@kethandosapati','https://www.instagram.com/kethandosapati'],
     ];
 
     /* ───────────────────────── HOOKS ───────────────────────── */
@@ -1093,7 +1099,6 @@
           <div className="sh reveal">
             <h2><span className="it">A bit</span> about me.</h2>
             <div className="sh-side">
-              <span className="eyebrow">About</span>
               <p>Six years building, two and a half of those in production. I like working at the intersection of backend, LLM workflows, and the user-facing parts that decide whether anyone actually uses the thing.</p>
             </div>
           </div>
@@ -1319,47 +1324,26 @@
 
     function Feature({ p }){
       return (
-        <article className="feature reveal">
-          <div className="feature-art">
-            <CaseArt kind={p.art} />
-            <span className="badge-top">{p.badge}</span>
-            <span className="year-tr">{p.year}</span>
-            <span className="domain">{p.domain}</span>
+        <div className="pkg reveal">
+          <div className="pkg-head">
+            <div className="pkg-title">{p.title}</div>
+            <span className="pkg-pill">{p.badge}</span>
           </div>
-          <div className="feature-body">
-            <div className="feature-headline">
-              <h3 className="feature-title">{p.title}</h3>
-              {p.tagline && <p className="feature-tagline">{p.tagline}</p>}
-            </div>
-            <dl className="feature-info">
-              <div className="feature-info-cell"><dt>Role</dt><dd>{p.role}</dd></div>
-              <div className="feature-info-cell"><dt>Year</dt><dd>{p.year}</dd></div>
-              <div className="feature-info-cell"><dt>Status</dt><dd>Live in production</dd></div>
-            </dl>
-            <p className="feature-desc">{p.desc}</p>
-            {p.bullets && (
-              <div className="feature-highlights">
-                {p.bullets.map((b,j)=>(
-                  <div className="feature-highlight" key={j}>
-                    <span className="num">0{j+1}</span>
-                    <p>{b}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className="feature-stack">
-              {p.stack.map(s=><span key={s}>{s}</span>)}
-            </div>
-            <div className="feature-actions">
-              {p.links.map(([l,h,kind])=>(
-                <a key={l} className={`btn ${kind==='primary'?'btn-primary':'btn-ghost'} magnetic`}
-                   href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
-                  {l} <span className="arrow"></span>
-                </a>
-              ))}
-            </div>
+          <p className="pkg-desc">{p.tagline || p.desc}</p>
+          <div className="pkg-metrics">
+            <div className="pkg-metric"><b>Live</b><span>in production</span></div>
+            <div className="pkg-metric"><b>{p.year}</b><span>shipped</span></div>
+            <div className="pkg-metric"><b>{p.stack.length}</b><span>stack items</span></div>
           </div>
-        </article>
+          <div className="pkg-links">
+            {p.links.map(([l,h])=>(
+              <a key={l} className="clink" href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
+                {l}
+                <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 8L8 2M8 2H3.5M8 2v4.5"/></svg>
+              </a>
+            ))}
+          </div>
+        </div>
       );
     }
 
@@ -1369,7 +1353,6 @@
           <div className="sh reveal">
             <h2><span className="it">Best</span> work.</h2>
             <div className="sh-side">
-              <span className="eyebrow">Two builds I'm proud of</span>
               <p>The two projects below are the ones I want you to actually open and try. Both are full-stack, both are live, both have me on the prompt, the API, the UI, and the deploy.</p>
             </div>
           </div>
@@ -1402,7 +1385,6 @@
           <div className="sh reveal">
             <h2><span className="it">More</span> projects.</h2>
             <div className="sh-side">
-              <span className="eyebrow">Other things I've built</span>
               <p>A quick scroll through the rest. Internal platforms, computer vision work, and earlier builds.</p>
             </div>
           </div>
@@ -1421,7 +1403,6 @@
           <div className="sh reveal">
             <h2><span className="it">Where</span> I've shipped.</h2>
             <div className="sh-side">
-              <span className="eyebrow">2023 to today</span>
               <p>Three companies and one academic lab. A lot of LLM systems in production.</p>
             </div>
           </div>
@@ -1434,7 +1415,6 @@
                   <p className="role-body">{r.body}</p>
                   <div className="role-stack">{r.stack.map(s=><span key={s}>{s}</span>)}</div>
                 </div>
-                <div className="role-coord"><b>{r.loc}</b>{r.coord}</div>
               </div>
             ))}
           </div>
@@ -1486,7 +1466,6 @@
           <div className="sh reveal">
             <h2><span className="it">Open</span> packages.</h2>
             <div className="sh-side">
-              <span className="eyebrow">Python, on PyPI</span>
               <p>Two libraries I pulled out of real work and pushed up so nobody has to write them from scratch again.</p>
             </div>
           </div>
@@ -1505,7 +1484,6 @@
           <div className="sh reveal">
             <h2><span className="it">The</span> stack.</h2>
             <div className="sh-side">
-              <span className="eyebrow">What I reach for</span>
               <p>Picked to fit the problem, not the resume. Years of use shown where it actually matters.</p>
             </div>
           </div>
@@ -1577,8 +1555,7 @@
       return (
         <footer className="footer">
           <span><b>© 2026 Kethan Dosapati.</b> Designed and built in New Jersey.</span>
-          <span className="center footer-clock"><span className="dot"></span> Available now · {t}</span>
-          <span className="right">Made with care.</span>
+          <span className="right footer-clock"><span className="dot"></span> Available now · {t}</span>
         </footer>
       );
     }
@@ -1637,7 +1614,7 @@
               {items.map((it,i)=>(
                 <div key={i} className={`cmd-item${i===active?' active':''}`} onMouseEnter={()=>setActive(i)} onClick={()=>go(it)} data-cursor>
                   <span style={{display:'flex',alignItems:'center'}}>
-                    <span className="ic">{it.kind==='nav'?'§':it.kind==='project'?'▢':'↗'}</span>
+                    <span className="ic">{it.kind==='nav'?'#':it.kind==='project'?'▢':'↗'}</span>
                     {it.label}
                   </span>
                   <span className="meta">{it.meta}</span>
