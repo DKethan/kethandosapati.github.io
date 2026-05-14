@@ -258,7 +258,7 @@
     /* Nav */
     .nav{position:fixed;inset:0 0 auto 0;z-index:50;padding:20px var(--pad-x);
       display:flex;align-items:center;justify-content:space-between;mix-blend-mode:difference;color:#fff}
-    .nav-mark{font-family:var(--serif),serif;font-style:italic;font-size:22px;letter-spacing:-.01em;color:#fff;line-height:1}
+    .nav-mark{font-family:var(--mono),monospace;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1}
     .nav-links{display:flex;gap:28px;font-family:var(--mono),monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)}
     .nav-links a{position:relative}
     .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
@@ -283,19 +283,22 @@
     /* ─────────── HERO ─────────── */
     .hero{
       display:grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 460px);
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 360px);
       gap:clamp(40px, 5vw, 80px);
       align-items:center;
-      padding:120px var(--pad-x) 72px;
+      padding:120px var(--pad-x) 52px;
       max-width:var(--maxw);margin:0 auto;
       position:relative;
     }
     @media (max-width:900px){
       .hero{grid-template-columns:1fr;gap:40px;padding:104px var(--pad-x) 48px;align-items:start}
     }
+    @media (min-width:901px) and (max-width:1279px){
+      .hero-title{font-size:clamp(72px,11vw,140px)}
+    }
 
     /* Hero text */
-    .hero-text{display:flex;flex-direction:column;gap:24px;max-width:720px;min-width:0}
+    .hero-text{display:flex;flex-direction:column;gap:24px;min-width:0}
 
     .hero-eyebrow{
       display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -308,24 +311,32 @@
     .hero-eyebrow .sep{color:var(--fg-dim);opacity:.6}
 
     .hero-title{
-      font-family:var(--serif-2),serif;font-weight:400;
-      font-size:clamp(52px, 8.4vw, 124px);
-      line-height:.96;letter-spacing:-.022em;margin:4px 0 0;color:var(--fg);
-      word-break:break-word;
+      font-family:var(--serif),serif;font-weight:400;font-style:italic;
+      font-size:clamp(66px, 12vw, 184px);
+      line-height:.92;letter-spacing:-.02em;text-transform:none;
+      margin:4px 0 0;color:var(--fg);
+      display:flex;flex-direction:column;
     }
-    .hero-title em{font-style:italic;font-weight:400}
+    .hero-title .ht-first{display:block}
+    .hero-title .ht-last{
+      display:block;
+      font-family:var(--mono),monospace;
+      font-style:normal;font-weight:400;
+      text-transform:uppercase;letter-spacing:.04em;
+      line-height:.95;
+    }
 
     .hero-tagline{
-      font-family:var(--serif),serif;font-style:italic;font-weight:400;
+      font-family:var(--sans),sans-serif;font-style:normal;font-weight:400;
       font-size:clamp(20px, 2vw, 28px);
       line-height:1.3;color:var(--fg);
-      margin:6px 0 0;max-width:36ch;
+      margin:6px 0 0;max-width:none;
     }
 
     .hero-paragraph{
       font-size:clamp(15px, 1.05vw, 16.5px);
       color:var(--fg-mute);line-height:1.6;
-      max-width:54ch;margin:0;
+      max-width:none;margin:0;
     }
     .hero-paragraph b{color:var(--fg);font-weight:500}
 
@@ -347,7 +358,7 @@
       .hero-portrait-wrap{order:2;justify-content:center}
     }
     .hero-portrait{
-      position:relative;width:100%;max-width:460px;
+      position:relative;width:100%;max-width:360px;
       aspect-ratio: 4 / 5;
       background:var(--bg-card);overflow:hidden;border-radius:14px;
       border:1px solid var(--line-strong);
@@ -356,26 +367,17 @@
       transition:opacity 1.2s var(--ease-out),transform 1.2s var(--ease-out);
       z-index:1;
     }
-    .hero-portrait::before{
-      content:"";position:absolute;top:14px;left:14px;width:42px;height:42px;
-      border-top:1.5px solid var(--accent);border-left:1.5px solid var(--accent);
-      border-top-left-radius:6px;z-index:4;pointer-events:none;opacity:.9;
-    }
-    .hero-portrait::after{
-      content:"";position:absolute;bottom:14px;right:14px;width:42px;height:42px;
-      border-bottom:1.5px solid var(--accent);border-right:1.5px solid var(--accent);
-      border-bottom-right-radius:6px;z-index:4;pointer-events:none;opacity:.9;
-    }
+    .hero-portrait::before,.hero-portrait::after{content:none}
     @media (max-width:900px){.hero-portrait{max-width:340px;border-radius:12px}}
     @media (max-width:760px){.hero-portrait{max-width:300px}}
     .hero-portrait.in{transform:translateY(0);opacity:1}
     .hero-portrait img{
-      width:100%;height:100%;object-fit:cover;object-position:center 22%;
-      filter:contrast(1.05) saturate(.92) brightness(1.02);
-      transform:scale(1.02);
-      transition:transform 1.4s var(--ease-out),filter .6s var(--ease);
+      width:100%;height:100%;object-fit:cover;object-position:center top;
+      filter:grayscale(1) contrast(1.05) brightness(.95);
+      transform:scale(1.04);
+      transition:transform 6s linear;
     }
-    .hero-portrait:hover img{transform:scale(1.06);filter:contrast(1.08) saturate(1) brightness(1.04)}
+    .hero-portrait:hover img{transform:scale(1.08)}
     .hero-portrait .duotone{
       position:absolute;inset:0;background:
         radial-gradient(80% 60% at 100% 100%, var(--accent-soft), transparent 60%),
@@ -410,7 +412,7 @@
 
     /* ─────────── PROOF STATS BAR ─────────── */
     .proof{
-      max-width:var(--maxw);margin:0 auto;padding:32px var(--pad-x);
+      max-width:var(--maxw);margin:0 auto;padding:28px var(--pad-x);
       border-top:1px solid var(--line);border-bottom:1px solid var(--line);
       display:grid;grid-template-columns:repeat(5,1fr);gap:24px;
     }
@@ -669,13 +671,12 @@
     /* ─────────── MOBILE TUNING ─────────── */
     @media (max-width:760px){
       .nav{padding:14px var(--pad-x)}
-      .nav-mark{font-size:18px}
+      .nav-mark{font-size:10.5px}
       .hero{padding:96px var(--pad-x) 44px;gap:32px}
       .hero-text{gap:20px}
       .hero-portrait{max-width:280px}
-      .hero-portrait::before,.hero-portrait::after{width:32px;height:32px;top:10px;left:10px}
-      .hero-portrait::after{top:auto;left:auto;bottom:10px;right:10px}
-      .hero-title{font-size:clamp(52px,13vw,88px);letter-spacing:-.018em;line-height:.98}
+      .hero-portrait::before,.hero-portrait::after{content:none}
+      .hero-title{font-size:clamp(56px,16vw,112px);letter-spacing:-.018em;line-height:.92}
       .hero-tagline{font-size:clamp(18px,4.6vw,22px);max-width:none}
       .hero-paragraph{font-size:15px}
       .hero-eyebrow{font-size:10.5px;gap:8px}
@@ -710,7 +711,7 @@
       .role-title{font-size:22px}
     }
     @media (max-width:420px){
-      .hero-title{font-size:clamp(46px,16vw,74px)}
+      .hero-title{font-size:clamp(52px,18vw,92px)}
       .feature-title{font-size:36px}
       .contact-lead{font-size:44px}
     }
@@ -1024,14 +1025,15 @@
               <span>Open Summer 2026</span>
             </div>
             <h1 className="hero-title">
-              Kethan <em>Dosapati</em>
+              <span className="ht-first">Kethan</span>
+              <span className="ht-last">Dosapati</span>
             </h1>
             <p className="hero-tagline">
               I build production GenAI systems, agents, and tools people actually use.
             </p>
             <p className="hero-paragraph">
-              Six years writing Python and shipping LLM workflows — from RAG pipelines
-              and multi-agent systems all the way to the front-end on top.
+              I've spent six years writing Python and shipping LLM workflows, from RAG pipelines
+              and multi-agent systems all the way up to the front-end people see.
             </p>
             <div className="hero-actions">
               <a className="btn btn-primary magnetic" href={'#contact'} data-cursor>
