@@ -211,6 +211,8 @@
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;overflow-x:hidden;width:100%;scrollbar-width:none;-ms-overflow-style:none}
     html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+    .space-bg{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:0;opacity:1}
+    @media (prefers-reduced-motion:reduce){.space-bg{display:none}}
     html{background:var(--bg);color:var(--fg);scroll-behavior:smooth}
     body{
       font-family:var(--sans),sans-serif;font-size:16px;line-height:1.55;color:var(--fg);background:var(--bg);
@@ -234,22 +236,42 @@
     html[data-theme="light"] .grain{mix-blend-mode:multiply;opacity:.06}
 
     /* Cursor */
-    .cursor{position:fixed;left:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--fg);
+    /* Star cursor: bright core + 4-point + 4-diagonal spike flare */
+    .cursor{position:fixed;left:0;top:0;width:0;height:0;
       z-index:2147483640;pointer-events:none;transform:translate(-50%,-50%);
-      transition:width .25s var(--ease),height .25s var(--ease),background .15s,opacity .2s;will-change:transform}
-    .cursor-ring{position:fixed;left:0;top:0;width:36px;height:36px;border:1px solid var(--fg);border-radius:50%;
-      z-index:2147483639;pointer-events:none;transform:translate(-50%,-50%);opacity:.45;
-      transition:width .3s var(--ease),height .3s var(--ease),opacity .2s,border-color .15s,background .2s;will-change:transform}
-    body.cursor-hover .cursor{width:0;height:0}
-    body.cursor-hover .cursor-ring{width:72px;height:72px;border-color:var(--accent);opacity:1;background:rgba(200,255,63,0.05)}
-    body.cursor-text .cursor{width:2px;height:24px;border-radius:1px}
-    body.cursor-text .cursor-ring{opacity:0}
-    body.cursor-view .cursor{width:0;height:0}
-    body.cursor-view .cursor-ring{width:90px;height:90px;background:var(--accent);border-color:var(--accent);opacity:1;color:var(--accent-ink)}
+      transition:opacity .2s,filter .2s;will-change:transform}
+    .cursor::before{content:"";position:absolute;left:50%;top:50%;
+      width:5px;height:5px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);
+      box-shadow:
+        0 0 10px 2px rgba(255,255,255,.9),
+        0 0 24px 6px rgba(200,220,255,.55),
+        0 0 60px 18px rgba(160,190,255,.25)}
+    .cursor::after{content:"";position:absolute;left:50%;top:50%;
+      width:1px;height:90px;transform:translate(-50%,-50%);
+      background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.95) 50%,transparent 100%)}
+    .cursor-ring{position:fixed;left:0;top:0;width:0;height:0;border:0;background:transparent;
+      z-index:2147483639;pointer-events:none;transform:translate(-50%,-50%);opacity:1;
+      transition:opacity .2s,filter .2s;will-change:transform}
+    .cursor-ring::before{content:"";position:absolute;left:50%;top:50%;
+      width:90px;height:1px;transform:translate(-50%,-50%);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.95) 50%,transparent 100%)}
+    .cursor-ring::after{content:"";position:absolute;left:50%;top:50%;
+      width:64px;height:1px;transform:translate(-50%,-50%) rotate(45deg);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.6) 50%,transparent 100%);
+      box-shadow:0 0 0 transparent}
+    /* Second diagonal via cursor-label (kept invisible when no label) */
+    .cursor-label::before{content:"";position:absolute;left:50%;top:50%;
+      width:64px;height:1px;transform:translate(-50%,-50%) rotate(-45deg);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.6) 50%,transparent 100%)}
+    body.cursor-hover .cursor{filter:drop-shadow(0 0 6px var(--accent))}
+    body.cursor-hover .cursor::before{background:var(--accent);box-shadow:0 0 14px 4px var(--accent),0 0 36px 10px rgba(200,255,63,.4)}
+    body.cursor-text .cursor::after,body.cursor-text .cursor-ring::before,body.cursor-text .cursor-ring::after,body.cursor-text .cursor-label::before{opacity:0}
+    body.cursor-text .cursor::before{width:2px;height:22px;border-radius:1px;box-shadow:none}
+    body.cursor-view .cursor::before{width:0;height:0;box-shadow:none}
     .cursor-label{position:fixed;left:0;top:0;z-index:2147483641;pointer-events:none;
-      transform:translate(-50%,-50%);opacity:0;font-family:var(--mono),monospace;font-size:11px;
-      text-transform:uppercase;letter-spacing:.08em;color:var(--accent-ink);transition:opacity .15s}
-    body.cursor-view .cursor-label{opacity:1}
+      transform:translate(-50%,-50%);opacity:1;font-family:var(--mono),monospace;font-size:11px;
+      text-transform:uppercase;letter-spacing:.08em;color:transparent;transition:color .15s}
+    body.cursor-view .cursor-label{color:var(--accent-ink)}
     @media (hover:none),(pointer:coarse){.cursor,.cursor-ring,.cursor-label{display:none}}
 
     /* Scroll progress hairline */
@@ -358,11 +380,7 @@
     .hero-portrait-wrap{
       position:relative;display:flex;align-items:center;justify-content:flex-end;min-width:0;
     }
-    .hero-portrait-wrap::before{
-      content:"";position:absolute;inset:auto -8% -10% -8%;height:60%;
-      background:radial-gradient(60% 70% at 50% 60%, var(--accent-soft), transparent 70%);
-      filter:blur(40px);pointer-events:none;z-index:0;
-    }
+    .hero-portrait-wrap::before{content:none}
     @media (max-width:900px){
       .hero-portrait-wrap{order:2;justify-content:center}
     }
@@ -389,7 +407,6 @@
     .hero-portrait:hover img{transform:scale(1.08)}
     .hero-portrait .duotone{
       position:absolute;inset:0;background:
-        radial-gradient(80% 60% at 100% 100%, var(--accent-soft), transparent 60%),
         linear-gradient(180deg, transparent 55%, rgba(0,0,0,.42) 100%);
       mix-blend-mode:normal;opacity:1;pointer-events:none;z-index:2;
     }
@@ -1005,6 +1022,234 @@
         requestAnimationFrame(tick);
       };
       return <span className="scramble" onMouseEnter={onEnter}>{display}</span>;
+    }
+
+    function SpaceBg(){
+      const ref = useRef(null);
+      useEffect(()=>{
+        const canvas = ref.current; if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let W = 0, H = 0, stars = [], shooting = null, nextShoot = 0;
+
+        const LAYERS = [
+          { count: 80, speed: .015, sizeMin: .3, sizeMax: .9, alphaMin: .25, alphaMax: .55, twinkle: .35 },
+          { count: 55, speed: .035, sizeMin: .6, sizeMax: 1.4, alphaMin: .35, alphaMax: .75, twinkle: .5 },
+          { count: 28, speed: .07,  sizeMin: 1.1, sizeMax: 1.9, alphaMin: .55, alphaMax: 1,   twinkle: .7 },
+        ];
+        // Spiral galaxy params (Milky Way style)
+        const galaxy = {
+          cxFrac: .82, cyFrac: .78,
+          radius: 200,
+          arms: 2,
+          armPoints: 900,
+          haloPoints: 500,
+          nebulaPoints: 180,
+          twist: 5.6,
+          armSpread: .22,
+          tilt: .42,
+          rotation: -.42,          // disc roll angle
+          rotSpeed: .03,
+          colors: ['#ffffff','#ffe6f0','#e6c6ff','#b8caff','#ffd6a8','#ffaecf'],
+        };
+        let galaxyStars = [];
+
+        let galaxyNebulae = [];
+        const seedGalaxy = ()=>{
+          galaxyStars = [];
+          galaxyNebulae = [];
+          const R = Math.min(W, H) * .42;
+          galaxy.radius = R;
+          // bright tiny stars along arms
+          for(let arm=0; arm<galaxy.arms; arm++){
+            const armOffset = (arm / galaxy.arms) * Math.PI * 2;
+            for(let i=0; i<galaxy.armPoints; i++){
+              const tNorm = Math.pow(Math.random(), .9);
+              const r = tNorm * R;
+              const armAngle = armOffset + tNorm * galaxy.twist;
+              const jitter = (Math.random()-.5) * galaxy.armSpread * (1 - tNorm*.6);
+              const ang = armAngle + jitter;
+              const size = .3 + Math.random()*1.1 * (1 - tNorm*.4);
+              const alpha = (.45 + Math.random()*.55) * (1 - tNorm*.35);
+              const color = galaxy.colors[Math.floor(Math.random()*galaxy.colors.length)];
+              galaxyStars.push({ r0:r, a0:ang, size, alpha, color, ph:Math.random()*Math.PI*2 });
+            }
+            // nebula blobs along arms
+            for(let i=0; i<galaxy.nebulaPoints/galaxy.arms; i++){
+              const tNorm = Math.pow(Math.random(), .85);
+              const r = tNorm * R;
+              const armAngle = armOffset + tNorm * galaxy.twist + (Math.random()-.5)*.18;
+              const blobR = 18 + Math.random()*46 * (1 - tNorm*.4);
+              // pink near core → purple → blue at edge
+              const palette = [
+                'rgba(255,160,200,', // pink
+                'rgba(220,140,230,', // magenta/violet
+                'rgba(140,120,240,', // purple
+                'rgba(110,160,255,', // blue
+              ];
+              const idx = Math.min(palette.length-1, Math.floor(tNorm * palette.length));
+              const alpha = (.10 + Math.random()*.18) * (1 - tNorm*.3);
+              galaxyNebulae.push({ r0:r, a0:armAngle, blobR, color:palette[idx], alpha });
+            }
+          }
+          // halo / dust stars
+          for(let i=0;i<galaxy.haloPoints;i++){
+            const r = R * (.05 + Math.pow(Math.random(),1.8)*1.15);
+            const ang = Math.random()*Math.PI*2;
+            galaxyStars.push({
+              r0:r, a0:ang,
+              size:.25 + Math.random()*.6,
+              alpha:(.15 + Math.random()*.35) * Math.max(0,1 - r/R*.8),
+              color:'#ffffff', ph:Math.random()*Math.PI*2,
+            });
+          }
+        };
+
+        const seed = ()=>{
+          stars = [];
+          for(const L of LAYERS){
+            for(let i=0;i<L.count;i++){
+              stars.push({
+                x: Math.random()*W, y: Math.random()*H,
+                vx:(Math.random()*.5+.5)*L.speed*(Math.random()<.5?-1:1),
+                vy:(Math.random()-.5)*L.speed*.2,
+                r:L.sizeMin+Math.random()*(L.sizeMax-L.sizeMin),
+                a0:L.alphaMin+Math.random()*(L.alphaMax-L.alphaMin),
+                tw:L.twinkle, ph:Math.random()*Math.PI*2,
+              });
+            }
+          }
+          seedGalaxy();
+        };
+        const resize = ()=>{
+          W = window.innerWidth; H = window.innerHeight;
+          canvas.width = W*dpr; canvas.height = H*dpr;
+          canvas.style.width = W+'px'; canvas.style.height = H+'px';
+          ctx.setTransform(dpr,0,0,dpr,0,0);
+          seed();
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        let raf = 0, start = performance.now();
+        const render = (now)=>{
+          const t = (now - start) / 1000;
+          ctx.clearRect(0,0,W,H);
+
+          // stars
+          ctx.fillStyle = '#ffffff';
+          for(const s of stars){
+            s.x += s.vx; s.y += s.vy;
+            if(s.x < -5) s.x = W+5; else if(s.x > W+5) s.x = -5;
+            if(s.y < -5) s.y = H+5; else if(s.y > H+5) s.y = -5;
+            const tw = 1 - s.tw + s.tw * (.5 + .5*Math.sin(t*1.6 + s.ph));
+            ctx.globalAlpha = s.a0 * tw;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+            ctx.fill();
+          }
+
+          // shooting star
+          if(!shooting && t > nextShoot){
+            shooting = { x:Math.random()*W*.6, y:Math.random()*H*.4, vx:6+Math.random()*3, vy:1.4+Math.random()*1.2, life:1 };
+            nextShoot = t + 6 + Math.random()*8;
+          }
+          if(shooting){
+            shooting.x += shooting.vx; shooting.y += shooting.vy; shooting.life -= .012;
+            const ang = Math.atan2(shooting.vy, shooting.vx);
+            const tailLen = 80;
+            const tx = shooting.x - tailLen*Math.cos(ang);
+            const ty = shooting.y - tailLen*Math.sin(ang);
+            const grad = ctx.createLinearGradient(shooting.x, shooting.y, tx, ty);
+            grad.addColorStop(0, `rgba(255,255,255,${Math.max(0,shooting.life)})`);
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1.4; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(shooting.x, shooting.y); ctx.lineTo(tx, ty); ctx.stroke();
+            if(shooting.life <= 0 || shooting.x > W+100 || shooting.y > H+100) shooting = null;
+          }
+
+          // galaxy
+          const gcx = galaxy.cxFrac*W, gcy = galaxy.cyFrac*H;
+          const rot = t * galaxy.rotSpeed;
+          const R = galaxy.radius;
+
+          ctx.save();
+          ctx.translate(gcx, gcy);
+          ctx.rotate(galaxy.rotation);
+          ctx.scale(1, galaxy.tilt);
+
+          // outer blue halo
+          const halo = ctx.createRadialGradient(0,0, R*.35, 0,0, R*1.25);
+          halo.addColorStop(0, 'rgba(80,90,200,0)');
+          halo.addColorStop(.4, 'rgba(70,80,200,0.18)');
+          halo.addColorStop(.7, 'rgba(40,40,120,0.10)');
+          halo.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = halo;
+          ctx.beginPath(); ctx.arc(0,0, R*1.25, 0, Math.PI*2); ctx.fill();
+
+          // pink/purple mid glow
+          const mid = ctx.createRadialGradient(0,0,0, 0,0, R*.78);
+          mid.addColorStop(0, 'rgba(255,180,210,0.55)');
+          mid.addColorStop(.25, 'rgba(230,130,200,0.38)');
+          mid.addColorStop(.55, 'rgba(150,90,220,0.18)');
+          mid.addColorStop(1, 'rgba(40,20,80,0)');
+          ctx.fillStyle = mid;
+          ctx.beginPath(); ctx.arc(0,0, R*.78, 0, Math.PI*2); ctx.fill();
+
+          // nebula blobs (rotated with the disc)
+          ctx.globalCompositeOperation = 'lighter';
+          for(const n of galaxyNebulae){
+            const a = n.a0 + rot * (1 + (R - n.r0)/R * .25);
+            const nx = Math.cos(a) * n.r0;
+            const ny = Math.sin(a) * n.r0;
+            const g = ctx.createRadialGradient(nx, ny, 0, nx, ny, n.blobR);
+            g.addColorStop(0, n.color + (n.alpha) + ')');
+            g.addColorStop(1, n.color + '0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(nx, ny, n.blobR, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.globalCompositeOperation = 'source-over';
+
+          // bright white-pink core
+          const core = ctx.createRadialGradient(0,0,0, 0,0, R*.28);
+          core.addColorStop(0, 'rgba(255,255,250,1)');
+          core.addColorStop(.18, 'rgba(255,235,210,0.85)');
+          core.addColorStop(.42, 'rgba(255,170,200,0.45)');
+          core.addColorStop(.75, 'rgba(220,120,200,0.18)');
+          core.addColorStop(1, 'rgba(180,80,180,0)');
+          ctx.fillStyle = core;
+          ctx.beginPath(); ctx.arc(0,0, R*.28, 0, Math.PI*2); ctx.fill();
+
+          // tight core hot-spot
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(0,0, 3.2, 0, Math.PI*2); ctx.fill();
+
+          // stars in arms + halo
+          for(const g of galaxyStars){
+            const ang = g.a0 + rot * (1 + (R - g.r0)/R * .35);
+            const sx = Math.cos(ang) * g.r0;
+            const sy = Math.sin(ang) * g.r0;
+            const tw = .55 + .45*Math.sin(t*1.4 + g.ph);
+            ctx.globalAlpha = g.alpha * tw;
+            ctx.fillStyle = g.color;
+            ctx.beginPath();
+            ctx.arc(sx, sy, g.size, 0, Math.PI*2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+          ctx.globalAlpha = 1;
+
+          ctx.globalAlpha = 1;
+          raf = requestAnimationFrame(render);
+        };
+        raf = requestAnimationFrame(render);
+        return ()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+      },[]);
+      return <canvas ref={ref} className="space-bg" aria-hidden="true" />;
     }
 
     function Hero(){
@@ -1687,6 +1932,7 @@
 
       return (
         <>
+          <SpaceBg />
           <Hero />
           <Proof />
           <About />
@@ -1746,14 +1992,14 @@
       const label = document.getElementById('cursor-label');
 
       if(fine){
-        let mx=0,my=0,rx=0,ry=0;
+        let mx=0,my=0;
         window.addEventListener('mousemove', e=>{
           mx=e.clientX; my=e.clientY;
-          cur.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-          label.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+          const tx = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+          cur.style.transform = tx;
+          ring.style.transform = tx;
+          label.style.transform = tx;
         });
-        const tick = ()=>{ rx += (mx-rx)*.18; ry += (my-ry)*.18; ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`; requestAnimationFrame(tick); };
-        requestAnimationFrame(tick);
 
         document.addEventListener('mouseover', e=>{
           const view = e.target.closest('[data-view]');
