@@ -269,6 +269,7 @@
     .nav-cta{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid rgba(255,255,255,.45);border-radius:999px;font-family:var(--mono),monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
     .nav-cta:hover{background:rgba(255,255,255,.06)}
     .nav-kbd{font-family:var(--mono),monospace;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.45)}
+    @media (hover:none),(pointer:coarse){.nav-kbd{display:none}.cmd-foot .cmd-kbd{display:none}.cmd-foot{justify-content:flex-start}}
     @media (max-width:880px){ .nav-links{display:none} }
 
     /* Section scaffold */
@@ -299,7 +300,7 @@
       .hero .hero-portrait-wrap{order:2}
       .hero .hero-title{order:3;align-items:center;margin:0}
       .hero .hero-tagline{order:4;margin:0}
-      .hero .hero-paragraph{order:5;margin:0}
+      .hero .hero-paragraph{display:none}
       .hero .hero-actions{order:6;margin:4px 0 0;justify-content:center}
     }
     @media (min-width:901px) and (max-width:1279px){
