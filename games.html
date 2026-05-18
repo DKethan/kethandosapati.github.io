@@ -69,7 +69,7 @@
   .snake-cell.food{background:#ff7a7a;border-radius:50%}
 
   /* 2048 */
-  .b2048{display:grid;grid-template-columns:repeat(4,72px);grid-template-rows:repeat(4,72px);gap:8px;background:#070707;padding:8px;border-radius:10px;border:1px solid var(--line)}
+  .b2048{display:grid;grid-template-columns:repeat(4,72px);grid-template-rows:repeat(4,72px);gap:8px;background:#070707;padding:8px;border-radius:10px;border:1px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
   .b2048 .cell{background:#1a1a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--fg)}
   .b2048 .cell[data-v="2"]{background:#23241e;color:#e0e0d8}
   .b2048 .cell[data-v="4"]{background:#2d2e23;color:#eaeadc}
@@ -350,7 +350,7 @@
       const move = (dir)=>{
         if(over) return;
         let g = grid.map(r=>r.slice());
-        let rots = {left:0,up:1,right:2,down:3}[dir];
+        let rots = {left:0,down:1,right:2,up:3}[dir];
         for(let i=0;i<rots;i++) g = rotate(g);
         const {grid:moved, gained, changed} = moveLeft(g);
         let result = moved;
@@ -382,18 +382,38 @@
         return ()=>window.removeEventListener('keydown', onKey);
       });
 
-      // touch swipe
-      const touch = useRef(null);
-      const onTS = e=>{ const t=e.touches[0]; touch.current={x:t.clientX,y:t.clientY}; };
-      const onTE = e=>{
-        if(!touch.current) return;
-        const t=e.changedTouches[0];
-        const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y;
-        if(Math.max(Math.abs(dx),Math.abs(dy))<20) return;
-        if(Math.abs(dx)>Math.abs(dy)) move(dx>0?'right':'left');
-        else move(dy>0?'down':'up');
-        touch.current=null;
-      };
+      // touch swipe — native listeners with passive:false so we can block page scroll
+      const boardRef = useRef(null);
+      const moveRef = useRef(move);
+      moveRef.current = move;
+      useEffect(()=>{
+        const board = boardRef.current;
+        if(!board) return;
+        let touch = null;
+        const THRESH = 22;
+        const onTS = e=>{ const t=e.touches[0]; touch={x:t.clientX,y:t.clientY}; e.preventDefault(); };
+        const onTM = e=>{ e.preventDefault(); };
+        const onTE = e=>{
+          if(!touch){ e.preventDefault(); return; }
+          const t = e.changedTouches[0];
+          const dx = t.clientX - touch.x, dy = t.clientY - touch.y;
+          touch = null;
+          if(Math.max(Math.abs(dx),Math.abs(dy)) < THRESH){ e.preventDefault(); return; }
+          if(Math.abs(dx) > Math.abs(dy)) moveRef.current(dx>0?'right':'left');
+          else moveRef.current(dy>0?'down':'up');
+          e.preventDefault();
+        };
+        board.addEventListener('touchstart', onTS, {passive:false});
+        board.addEventListener('touchmove',  onTM, {passive:false});
+        board.addEventListener('touchend',   onTE, {passive:false});
+        board.addEventListener('touchcancel',onTE, {passive:false});
+        return ()=>{
+          board.removeEventListener('touchstart', onTS);
+          board.removeEventListener('touchmove',  onTM);
+          board.removeEventListener('touchend',   onTE);
+          board.removeEventListener('touchcancel',onTE);
+        };
+      },[]);
 
       const reset = ()=>{ setGrid(fresh()); setScore(0); setOver(false); setWon(false); };
 
@@ -403,7 +423,7 @@
             <span className="stats">Score <b>{score}</b></span>
             <span className="stats">Best <b>{best}</b></span>
           </div>
-          <div className="b2048" onTouchStart={onTS} onTouchEnd={onTE}>
+          <div ref={boardRef} className="b2048">
             {grid.flatMap((row,y)=>row.map((v,x)=>(
               <div key={y+'-'+x} className="cell" data-v={v||''}>{v||''}</div>
             )))}
