@@ -105,7 +105,7 @@
   .react-pad.result{background:var(--bg-elev);color:var(--fg);border:1px solid var(--line-strong)}
 
   /* Breakout */
-  .breakout-canvas{background:#070707;border:1px solid var(--line);border-radius:8px;display:block}
+  .breakout-canvas{background:#070707;border:1px solid var(--line);border-radius:8px;display:block;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
 
   @media (max-width:540px){
     .b2048{grid-template-columns:repeat(4,56px);grid-template-rows:repeat(4,56px);gap:6px}
@@ -665,12 +665,19 @@
         const s = stateRef.current;
         canvas.width = s.W; canvas.height = s.H;
         let mx = s.paddle.x + s.paddle.w/2;
-        const onMove = e=>{
+        const onMouse = e=>{
           const r = canvas.getBoundingClientRect();
-          mx = ((e.clientX || (e.touches && e.touches[0].clientX)) - r.left) * (s.W / r.width);
+          mx = (e.clientX - r.left) * (s.W / r.width);
         };
-        canvas.addEventListener('mousemove', onMove);
-        canvas.addEventListener('touchmove', onMove, {passive:true});
+        const onTouch = e=>{
+          if(!e.touches || !e.touches[0]) return;
+          const r = canvas.getBoundingClientRect();
+          mx = (e.touches[0].clientX - r.left) * (s.W / r.width);
+          e.preventDefault();
+        };
+        canvas.addEventListener('mousemove', onMouse);
+        canvas.addEventListener('touchstart', onTouch, {passive:false});
+        canvas.addEventListener('touchmove',  onTouch, {passive:false});
 
         const rowColors = ['#ff7a7a','#ffd17a','#9bb6ff','#c8ff3f'];
         const tick = ()=>{
@@ -748,8 +755,9 @@
         rafRef.current = requestAnimationFrame(tick);
         return ()=>{
           cancelAnimationFrame(rafRef.current);
-          canvas.removeEventListener('mousemove', onMove);
-          canvas.removeEventListener('touchmove', onMove);
+          canvas.removeEventListener('mousemove', onMouse);
+          canvas.removeEventListener('touchstart', onTouch);
+          canvas.removeEventListener('touchmove',  onTouch);
         };
       },[over]);
 
