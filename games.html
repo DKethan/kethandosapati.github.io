@@ -131,13 +131,54 @@
   <script type="text/babel" data-presets="react">
     const { useState, useEffect, useRef, useCallback } = React;
 
+    // Detect touch-primary devices (phones, tablets) vs pointer devices (laptops, desktops).
+    // (hover:none) + (pointer:coarse) is the standard pair for "no fine pointer, no hover" = touch.
+    // Computes a per-cell pixel size that makes a (cols × rows) board fit the viewport
+    // without page scroll. Recomputes on resize. Used by Snake, 2048, Memory, TTT, Breakout.
+    const useFitCell = (cols, rows, opts)=>{
+      const o = opts || {};
+      const min = o.min || 16, max = o.max || 80;
+      const reservedV = o.reservedV != null ? o.reservedV : 320;
+      const reservedH = o.reservedH != null ? o.reservedH : 80;
+      const aspect = o.aspect || 1; // cell-height / cell-width ratio
+      const get = ()=>{
+        if(typeof window === 'undefined') return min;
+        const mh = window.innerHeight - reservedV;
+        const mw = window.innerWidth  - reservedH;
+        const byW = Math.floor(mw / cols);
+        const byH = Math.floor(mh / (rows * aspect));
+        return Math.max(min, Math.min(byW, byH, max));
+      };
+      const [size, setSize] = useState(get);
+      useEffect(()=>{
+        const onR = ()=> setSize(get());
+        window.addEventListener('resize', onR);
+        return ()=> window.removeEventListener('resize', onR);
+      },[cols, rows, aspect]);
+      return size;
+    };
+
+    const useIsTouch = ()=>{
+      const query = '(hover: none) and (pointer: coarse)';
+      const get = ()=> typeof window!=='undefined' && window.matchMedia && window.matchMedia(query).matches;
+      const [touch, setTouch] = useState(get);
+      useEffect(()=>{
+        if(!window.matchMedia) return;
+        const mq = window.matchMedia(query);
+        const onChange = ()=> setTouch(mq.matches);
+        mq.addEventListener ? mq.addEventListener('change', onChange) : mq.addListener(onChange);
+        return ()=> mq.removeEventListener ? mq.removeEventListener('change', onChange) : mq.removeListener(onChange);
+      },[]);
+      return touch;
+    };
+
     const GAMES = [
       { id:'snake',    title:'Snake',          desc:'Eat. Grow. Don\'t crash.',           tag:'Arcade' },
       { id:'b2048',    title:'2048',           desc:'Slide tiles, merge twins, hit 2048.', tag:'Puzzle' },
       { id:'memory',   title:'Memory match',   desc:'Flip pairs, match all 8.',           tag:'Memory' },
       { id:'ttt',      title:'Tic-tac-toe',    desc:'You\'re X, the CPU is paranoid.',    tag:'Strategy' },
-      { id:'reaction', title:'Reaction',       desc:'Click the moment it turns green.',   tag:'Reflex' },
-      { id:'breakout', title:'Breakout',       desc:'Mouse paddle. Bricks. Don\'t miss.', tag:'Arcade' },
+      { id:'reaction', title:'Reaction',       desc:t=>t?'Tap the moment it turns green.':'Click the moment it turns green.', tag:'Reflex' },
+      { id:'breakout', title:'Breakout',       desc:t=>t?'Finger paddle. Bricks. Don\'t miss.':'Mouse paddle. Bricks. Don\'t miss.', tag:'Arcade' },
     ];
 
     function App(){
@@ -150,6 +191,7 @@
     }
 
     function Hub({ onPick }){
+      const isTouch = useIsTouch();
       return (
         <>
           <h1>Let's <span className="acc">play.</span></h1>
@@ -159,7 +201,7 @@
               <div key={g.id} className="tile" onClick={()=>onPick(g.id)}>
                 <span className="lbl">{g.tag}</span>
                 <h3>{g.title}</h3>
-                <p>{g.desc}</p>
+                <p>{typeof g.desc === 'function' ? g.desc(isTouch) : g.desc}</p>
                 <div className="meta"><span>Play</span><span className="arrow">→</span></div>
               </div>
             ))}
@@ -190,8 +232,9 @@
 
     /* ───────── SNAKE ───────── */
     function Snake(){
+      const isTouch = useIsTouch();
       const SIZE = 18;
-      const CELL = 20;
+      const CELL = useFitCell(SIZE, SIZE, {min:14, max:38});
       const [snake, setSnake] = useState([{x:9,y:9}]);
       const [dir, setDir] = useState({x:1,y:0});
       const [food, setFood] = useState({x:5,y:5});
@@ -281,7 +324,7 @@
             if(!ate) next.pop(); else { setScore(s=>s+1); setFood(spawnFood(next)); }
             return next;
           });
-        }, 110);
+        }, 200);
         return ()=>clearInterval(id);
       },[dead, food]);
 
@@ -305,7 +348,7 @@
           <div ref={boardRef} className="snake-board" style={{gridTemplateColumns:`repeat(${SIZE},${CELL}px)`,gridTemplateRows:`repeat(${SIZE},${CELL}px)`,width:SIZE*CELL,height:SIZE*CELL}}>
             {cells}
           </div>
-          <div className="game-hint">Arrow keys / WASD on desktop, swipe on mobile. Don't hit the walls or yourself.</div>
+          <div className="game-hint">{isTouch ? "Swipe your finger across the board to steer. Don't hit the walls or yourself." : "Arrow keys or WASD to steer. Don't hit the walls or yourself."}</div>
           {dead && <button className="btn primary" onClick={reset}>Play again</button>}
         </div>
       );
@@ -313,6 +356,8 @@
 
     /* ───────── 2048 ───────── */
     function Game2048(){
+      const isTouch = useIsTouch();
+      const CELL = useFitCell(4, 4, {min:54, max:120});
       const empty = ()=> Array.from({length:4},()=>Array(4).fill(0));
       const addTile = (g)=>{
         const opts=[]; for(let y=0;y<4;y++)for(let x=0;x<4;x++) if(!g[y][x]) opts.push([y,x]);
@@ -423,12 +468,12 @@
             <span className="stats">Score <b>{score}</b></span>
             <span className="stats">Best <b>{best}</b></span>
           </div>
-          <div ref={boardRef} className="b2048">
+          <div ref={boardRef} className="b2048" style={{gridTemplateColumns:`repeat(4,${CELL}px)`,gridTemplateRows:`repeat(4,${CELL}px)`}}>
             {grid.flatMap((row,y)=>row.map((v,x)=>(
-              <div key={y+'-'+x} className="cell" data-v={v||''}>{v||''}</div>
+              <div key={y+'-'+x} className="cell" data-v={v||''} style={{fontSize:Math.round(CELL*0.32)}}>{v||''}</div>
             )))}
           </div>
-          <div className="game-hint">Arrow keys / WASD on desktop, swipe on mobile.</div>
+          <div className="game-hint">{isTouch ? "Swipe your finger up, down, left, or right to slide the tiles." : "Use the arrow keys or WASD to slide the tiles."}</div>
           {(over||won) && (
             <div style={{display:'flex',gap:10,alignItems:'center'}}>
               <span className="stats">{won?'You hit 2048! 🎉':'Game over'}</span>
@@ -441,6 +486,10 @@
 
     /* ───────── MEMORY ───────── */
     function Memory(){
+      const isTouch = useIsTouch();
+      // cards are taller than wide (~1.25 aspect); fit 4 cols × 4 rows
+      const CARD = useFitCell(4, 4, {min:56, max:110, aspect:1.25});
+      const CARD_H = Math.round(CARD * 1.25);
       const ICONS = ['◆','▲','●','■','✦','✺','✸','✷'];
       const shuffle = ()=>{
         const arr = [...ICONS, ...ICONS].map((v,i)=>({id:i, v, flipped:false, matched:false}));
@@ -493,16 +542,17 @@
             <span className="stats">Moves <b>{moves}</b></span>
             <span className="stats">Best <b>{best||'—'}</b></span>
           </div>
-          <div className="mem-grid">
+          <div className="mem-grid" style={{gridTemplateColumns:`repeat(4,${CARD}px)`}}>
             {cards.map((c,i)=>(
               <div key={c.id}
                 className={'mem-card'+(c.flipped?' flipped':'')+(c.matched?' matched':'')}
+                style={{width:CARD,height:CARD_H,fontSize:Math.round(CARD*0.42)}}
                 onClick={()=>flip(i)}>
                 {(c.flipped||c.matched) ? c.v : ''}
               </div>
             ))}
           </div>
-          <div className="game-hint">Flip two cards. Match all 8 pairs in as few moves as you can.</div>
+          <div className="game-hint">{isTouch ? "Tap two cards to flip them. Match all 8 pairs in as few moves as you can." : "Click two cards to flip them. Match all 8 pairs in as few moves as you can."}</div>
           {done && <div style={{display:'flex',gap:10,alignItems:'center'}}>
             <span className="stats">Cleared in {moves} moves</span>
             <button className="btn primary" onClick={reset}>Shuffle</button>
@@ -513,6 +563,7 @@
 
     /* ───────── TIC-TAC-TOE ───────── */
     function TicTacToe(){
+      const CELL = useFitCell(3, 3, {min:64, max:140});
       const [board, setBoard] = useState(Array(9).fill(null));
       const [turn, setTurn] = useState('x');
       const [over, setOver] = useState(null); // 'x'|'o'|'draw'|null
@@ -564,9 +615,9 @@
       const statusText = over==='x'?'You win — somehow.':over==='o'?'CPU wins.':over==='draw'?'Draw.':turn==='x'?'Your move':'CPU thinking…';
       return (
         <div className="game-body">
-          <div className="ttt">
+          <div className="ttt" style={{gridTemplateColumns:`repeat(3,${CELL}px)`,gridTemplateRows:`repeat(3,${CELL}px)`}}>
             {board.map((v,i)=>(
-              <div key={i} className={'ttt-cell'+(v?' taken '+v:'')} onClick={()=>click(i)}>
+              <div key={i} className={'ttt-cell'+(v?' taken '+v:'')} style={{fontSize:Math.round(CELL*0.45)}} onClick={()=>click(i)}>
                 {v?v.toUpperCase():''}
               </div>
             ))}
@@ -579,6 +630,9 @@
 
     /* ───────── REACTION ───────── */
     function Reaction(){
+      const isTouch = useIsTouch();
+      const verb = isTouch ? 'Tap' : 'Click';
+      const verbLower = isTouch ? 'tap' : 'click';
       const [state, setState] = useState('idle'); // idle|waiting|ready|go|result|early
       const [time, setTime] = useState(0);
       const [best, setBest] = useState(()=>+localStorage.getItem('react_best')||0);
@@ -611,11 +665,11 @@
       useEffect(()=>()=>clearTimeout(timeoutRef.current),[]);
 
       const cls = state==='ready'?'react-pad ready':state==='go'?'react-pad go':(state==='result'||state==='early')?'react-pad result':'react-pad waiting';
-      const text = state==='idle' ? 'Click to start'
+      const text = state==='idle' ? `${verb} to start`
                  : state==='ready' ? 'Wait for green…'
-                 : state==='go' ? 'CLICK!'
-                 : state==='early' ? 'Too early — click to retry'
-                 : state==='result' ? `${time} ms — click to try again`
+                 : state==='go' ? (isTouch ? 'TAP!' : 'CLICK!')
+                 : state==='early' ? `Too early — ${verbLower} to retry`
+                 : state==='result' ? `${time} ms — ${verbLower} to try again`
                  : '';
       return (
         <div className="game-body">
@@ -624,13 +678,19 @@
             <span className="stats">Best <b>{best?best+' ms':'—'}</b></span>
           </div>
           <div className={cls} onClick={click}>{text}</div>
-          <div className="game-hint">Click when the panel turns green. Clicking early resets.</div>
+          <div className="game-hint">{isTouch ? 'Tap the panel when it turns green. Tapping early resets.' : 'Click the panel when it turns green. Clicking early resets.'}</div>
         </div>
       );
     }
 
     /* ───────── BREAKOUT ───────── */
     function Breakout(){
+      const isTouch = useIsTouch();
+      // Internal canvas resolution is fixed at 480x320 (aspect 1.5). We scale the
+      // DISPLAY size to fit the viewport — `useFitCell(3,2,{aspect:1})` gives a
+      // unit that, multiplied by 3 wide and 2 tall, fits the available area.
+      const unit = useFitCell(3, 2, {min:90, max:260});
+      const cssW = unit * 3, cssH = unit * 2;
       const canvasRef = useRef(null);
       const [score, setScore] = useState(0);
       const [best, setBest] = useState(()=>+localStorage.getItem('break_best')||0);
@@ -644,7 +704,7 @@
       const init = ()=>{
         const W = 480, H = 320;
         const paddle = { w: 70, h: 8, x: W/2-35, y: H-22 };
-        const ball   = { x: W/2, y: H-40, vx: 2.2, vy: -2.6, r: 5 };
+        const ball   = { x: W/2, y: H-40, vx: 1.5, vy: -1.8, r: 5 };
         const bricks = [];
         const cols=8, rows=4, bw=52, bh=14, bx=8, by=24, gap=4;
         for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
@@ -698,7 +758,7 @@
              s.ball.vy > 0){
             s.ball.vy *= -1;
             const hit = (s.ball.x - (s.paddle.x + s.paddle.w/2)) / (s.paddle.w/2);
-            s.ball.vx = hit * 3.6;
+            s.ball.vx = hit * 2.5;
           }
           // brick collision
           for(const b of s.bricks){
@@ -721,7 +781,7 @@
                 setBest(b=>{ const nb=Math.max(b,final); localStorage.setItem('break_best',nb); return nb; });
               } else {
                 s.ball.x = s.W/2; s.ball.y = s.H-40;
-                s.ball.vx = (Math.random()<.5?-1:1)*2.2; s.ball.vy = -2.6;
+                s.ball.vx = (Math.random()<.5?-1:1)*1.5; s.ball.vy = -1.8;
               }
               return next;
             });
@@ -772,8 +832,8 @@
             <span className="stats">Lives <b>{lives}</b></span>
             <span className="stats">Best <b>{best}</b></span>
           </div>
-          <canvas ref={canvasRef} className="breakout-canvas" style={{maxWidth:'100%'}} />
-          <div className="game-hint">Move the mouse (or finger) to control the paddle.</div>
+          <canvas ref={canvasRef} className="breakout-canvas" style={{width:cssW,height:cssH,maxWidth:'100%'}} />
+          <div className="game-hint">{isTouch ? 'Drag your finger across the canvas to move the paddle.' : 'Move the mouse to control the paddle.'}</div>
           {over && <button className="btn primary" onClick={reset}>Play again</button>}
         </div>
       );
