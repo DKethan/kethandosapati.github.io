@@ -62,7 +62,7 @@
   .btn.primary:hover{background:#d6ff63}
 
   /* Snake */
-  .snake-board{display:grid;background:#070707;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .snake-board{display:grid;background:#070707;border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
   .snake-cell{width:100%;height:100%}
   .snake-cell.snake{background:var(--accent)}
   .snake-cell.head{background:#fff}
@@ -200,6 +200,7 @@
       const [best, setBest] = useState(()=>+localStorage.getItem('snake_best')||0);
       const dirRef = useRef(dir);
       dirRef.current = dir;
+      const boardRef = useRef(null);
 
       const reset = ()=>{
         setSnake([{x:9,y:9}]); setDir({x:1,y:0}); setFood({x:5,y:5});
@@ -214,6 +215,8 @@
       useEffect(()=>{
         const turn = (dx,dy)=>{
           if(dirRef.current.x === -dx && dirRef.current.y === -dy) return;
+          if(dirRef.current.x === dx && dirRef.current.y === dy) return;
+          dirRef.current = {x:dx,y:dy};
           setDir({x:dx,y:dy});
         };
         const onKey = e=>{
@@ -225,23 +228,41 @@
           e.preventDefault();
         };
         let touch = null;
-        const onTS = e=>{ const t=e.touches[0]; touch={x:t.clientX,y:t.clientY}; };
-        const onTE = e=>{
-          if(!touch) return;
-          const t = e.changedTouches[0];
-          const dx = t.clientX - touch.x, dy = t.clientY - touch.y;
-          if(Math.max(Math.abs(dx),Math.abs(dy)) < 20){ touch=null; return; }
-          if(Math.abs(dx) > Math.abs(dy)) turn(dx>0?1:-1, 0);
-          else turn(0, dy>0?1:-1);
-          touch = null;
+        const THRESH = 18;
+        const onTS = e=>{
+          const t = e.touches[0];
+          touch = {x:t.clientX, y:t.clientY};
+          e.preventDefault();
         };
+        const onTM = e=>{
+          if(!touch){ e.preventDefault(); return; }
+          const t = e.touches[0];
+          const dx = t.clientX - touch.x, dy = t.clientY - touch.y;
+          const adx = Math.abs(dx), ady = Math.abs(dy);
+          if(Math.max(adx, ady) >= THRESH){
+            if(adx > ady) turn(dx>0?1:-1, 0);
+            else turn(0, dy>0?1:-1);
+            touch = {x:t.clientX, y:t.clientY};
+          }
+          e.preventDefault();
+        };
+        const onTE = e=>{ touch = null; e.preventDefault(); };
+        const board = boardRef.current;
         window.addEventListener('keydown', onKey);
-        window.addEventListener('touchstart', onTS, {passive:true});
-        window.addEventListener('touchend', onTE, {passive:true});
+        if(board){
+          board.addEventListener('touchstart', onTS, {passive:false});
+          board.addEventListener('touchmove',  onTM, {passive:false});
+          board.addEventListener('touchend',   onTE, {passive:false});
+          board.addEventListener('touchcancel',onTE, {passive:false});
+        }
         return ()=>{
           window.removeEventListener('keydown', onKey);
-          window.removeEventListener('touchstart', onTS);
-          window.removeEventListener('touchend', onTE);
+          if(board){
+            board.removeEventListener('touchstart', onTS);
+            board.removeEventListener('touchmove',  onTM);
+            board.removeEventListener('touchend',   onTE);
+            board.removeEventListener('touchcancel',onTE);
+          }
         };
       },[]);
       useEffect(()=>{
@@ -281,7 +302,7 @@
             <span className="stats">Score <b>{score}</b></span>
             <span className="stats">Best <b>{best}</b></span>
           </div>
-          <div className="snake-board" style={{gridTemplateColumns:`repeat(${SIZE},${CELL}px)`,gridTemplateRows:`repeat(${SIZE},${CELL}px)`,width:SIZE*CELL,height:SIZE*CELL}}>
+          <div ref={boardRef} className="snake-board" style={{gridTemplateColumns:`repeat(${SIZE},${CELL}px)`,gridTemplateRows:`repeat(${SIZE},${CELL}px)`,width:SIZE*CELL,height:SIZE*CELL}}>
             {cells}
           </div>
           <div className="game-hint">Arrow keys / WASD on desktop, swipe on mobile. Don't hit the walls or yourself.</div>
