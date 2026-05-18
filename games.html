@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Games · Kethan Dosapati</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0c0c; --bg-elev:#141414; --bg-card:#161616;
+    --fg:#f1efe9; --fg-mute:#8a8884; --fg-dim:#56544f;
+    --line:rgba(255,255,255,0.07); --line-strong:rgba(255,255,255,0.14);
+    --accent:#c8ff3f; --accent-soft:rgba(200,255,63,0.14); --accent-ink:#0a0a0a;
+    --mono:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --pad-x: clamp(20px, 3vw, 44px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;width:100%;scrollbar-width:none;-ms-overflow-style:none;background:var(--bg);color:var(--fg)}
+  html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+  body{font-family:var(--mono),monospace;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+  .nav{position:sticky;top:0;z-index:50;padding:18px var(--pad-x);
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(10,10,10,.72);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%)}
+  .nav-mark{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+  .nav-back{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);
+    border:1px solid var(--line-strong);padding:8px 14px;border-radius:999px}
+  .nav-back:hover{color:#fff;border-color:#fff}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:48px var(--pad-x) 80px}
+  h1{font-size:clamp(36px,5.4vw,72px);font-weight:400;letter-spacing:-.02em;line-height:1;margin:0 0 12px}
+  h1 .acc{color:var(--accent)}
+  .sub{color:var(--fg-mute);max-width:60ch;margin:0 0 36px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+  .tile{border:1px solid var(--line);border-radius:14px;padding:24px;background:var(--bg-card);
+    display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .2s,border-color .2s}
+  .tile:hover{transform:translateY(-3px);border-color:var(--line-strong)}
+  .tile .lbl{color:var(--fg-dim);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  .tile h3{margin:0;font-size:22px;font-weight:500;letter-spacing:-.01em}
+  .tile p{margin:6px 0 0;color:var(--fg-mute);font-size:13px}
+  .tile .meta{margin-top:auto;padding-top:14px;color:var(--fg-dim);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between}
+  .tile .arrow{color:var(--accent)}
+
+  .game{border:1px solid var(--line);border-radius:14px;background:var(--bg-card);padding:24px;display:flex;flex-direction:column;gap:16px}
+  .game-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .game-head h2{margin:0;font-size:22px;font-weight:500;letter-spacing:-.01em}
+  .game-head .stats{color:var(--fg-mute);font-size:12px}
+  .game-head .stats b{color:var(--fg);font-weight:500}
+  .game-back{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-mute);padding:8px 12px;border:1px solid var(--line);border-radius:4px}
+  .game-back:hover{color:var(--fg);border-color:var(--line-strong)}
+  .game-body{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+  .game-hint{color:var(--fg-dim);font-size:11px;letter-spacing:.06em;text-align:center}
+  .btn{font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;border:1px solid var(--line-strong);border-radius:999px;color:var(--fg)}
+  .btn:hover{background:rgba(255,255,255,.04)}
+  .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .btn.primary:hover{background:#d6ff63}
+
+  /* Snake */
+  .snake-board{display:grid;background:#070707;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .snake-cell{width:100%;height:100%}
+  .snake-cell.snake{background:var(--accent)}
+  .snake-cell.head{background:#fff}
+  .snake-cell.food{background:#ff7a7a;border-radius:50%}
+
+  /* 2048 */
+  .b2048{display:grid;grid-template-columns:repeat(4,72px);grid-template-rows:repeat(4,72px);gap:8px;background:#070707;padding:8px;border-radius:10px;border:1px solid var(--line)}
+  .b2048 .cell{background:#1a1a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--fg)}
+  .b2048 .cell[data-v="2"]{background:#23241e;color:#e0e0d8}
+  .b2048 .cell[data-v="4"]{background:#2d2e23;color:#eaeadc}
+  .b2048 .cell[data-v="8"]{background:#3d3f24;color:#f0eccc}
+  .b2048 .cell[data-v="16"]{background:#4a4d22;color:#f8f0bc}
+  .b2048 .cell[data-v="32"]{background:#5d6020;color:#fff4a8}
+  .b2048 .cell[data-v="64"]{background:#727620;color:#fff79a}
+  .b2048 .cell[data-v="128"]{background:#8a8e1e;color:#0a0a0a}
+  .b2048 .cell[data-v="256"]{background:#a3a81a;color:#0a0a0a}
+  .b2048 .cell[data-v="512"]{background:#bbc116;color:#0a0a0a}
+  .b2048 .cell[data-v="1024"]{background:#c8ff3f;color:#0a0a0a;font-size:18px}
+  .b2048 .cell[data-v="2048"]{background:#daff7c;color:#0a0a0a;font-size:18px}
+
+  /* Memory */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,72px);gap:10px}
+  .mem-card{width:72px;height:90px;border-radius:8px;border:1px solid var(--line-strong);background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:transform .15s,background .2s}
+  .mem-card:hover{transform:translateY(-2px)}
+  .mem-card.flipped{background:var(--bg-elev);border-color:var(--accent)}
+  .mem-card.matched{background:var(--accent-soft);border-color:var(--accent);cursor:default}
+
+  /* Tic-tac-toe */
+  .ttt{display:grid;grid-template-columns:repeat(3,80px);grid-template-rows:repeat(3,80px);gap:6px}
+  .ttt-cell{background:#1a1a1a;border:1px solid var(--line);border-radius:6px;font-size:36px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--fg)}
+  .ttt-cell:hover:not(.taken){background:#222}
+  .ttt-cell.x{color:var(--accent)}
+  .ttt-cell.o{color:#85d3ff}
+
+  /* Reaction */
+  .react-pad{width:min(90vw,440px);height:240px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;letter-spacing:.04em;cursor:pointer;user-select:none;transition:background .12s}
+  .react-pad.waiting{background:#1c1c1c;color:var(--fg-mute)}
+  .react-pad.ready{background:#9a2222;color:#fff}
+  .react-pad.go{background:var(--accent);color:var(--accent-ink)}
+  .react-pad.result{background:var(--bg-elev);color:var(--fg);border:1px solid var(--line-strong)}
+
+  /* Breakout */
+  .breakout-canvas{background:#070707;border:1px solid var(--line);border-radius:8px;display:block}
+
+  @media (max-width:540px){
+    .b2048{grid-template-columns:repeat(4,56px);grid-template-rows:repeat(4,56px);gap:6px}
+    .b2048 .cell{font-size:18px}
+    .mem-grid{grid-template-columns:repeat(4,60px);gap:8px}
+    .mem-card{width:60px;height:78px;font-size:22px}
+    .ttt{grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px)}
+    .ttt-cell{font-size:28px}
+  }
+</style>
+</head>
+<body>
+  <header class="nav">
+    <a class="nav-mark" href="index.html">Kethan&nbsp;Dosapati</a>
+    <a class="nav-back" href="index.html">← Portfolio</a>
+  </header>
+  <main class="wrap" id="root"></main>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    const GAMES = [
+      { id:'snake',    title:'Snake',          desc:'Eat. Grow. Don\'t crash.',           tag:'Arcade' },
+      { id:'b2048',    title:'2048',           desc:'Slide tiles, merge twins, hit 2048.', tag:'Puzzle' },
+      { id:'memory',   title:'Memory match',   desc:'Flip pairs, match all 8.',           tag:'Memory' },
+      { id:'ttt',      title:'Tic-tac-toe',    desc:'You\'re X, the CPU is paranoid.',    tag:'Strategy' },
+      { id:'reaction', title:'Reaction',       desc:'Click the moment it turns green.',   tag:'Reflex' },
+      { id:'breakout', title:'Breakout',       desc:'Mouse paddle. Bricks. Don\'t miss.', tag:'Arcade' },
+    ];
+
+    function App(){
+      const [active, setActive] = useState(null);
+      if(active){
+        const g = GAMES.find(x=>x.id===active);
+        return <GamePage game={g} onBack={()=>setActive(null)} />;
+      }
+      return <Hub onPick={setActive} />;
+    }
+
+    function Hub({ onPick }){
+      return (
+        <>
+          <h1>Let's <span className="acc">play.</span></h1>
+          <p className="sub">Six small one-player games. Pick any of them. Same dark theme as the rest of the site; controls live below each game.</p>
+          <div className="grid">
+            {GAMES.map(g=>(
+              <div key={g.id} className="tile" onClick={()=>onPick(g.id)}>
+                <span className="lbl">{g.tag}</span>
+                <h3>{g.title}</h3>
+                <p>{g.desc}</p>
+                <div className="meta"><span>Play</span><span className="arrow">→</span></div>
+              </div>
+            ))}
+          </div>
+        </>
+      );
+    }
+
+    function GamePage({ game, onBack }){
+      let Body = null;
+      if(game.id==='snake')    Body = <Snake />;
+      if(game.id==='b2048')    Body = <Game2048 />;
+      if(game.id==='memory')   Body = <Memory />;
+      if(game.id==='ttt')      Body = <TicTacToe />;
+      if(game.id==='reaction') Body = <Reaction />;
+      if(game.id==='breakout') Body = <Breakout />;
+      return (
+        <>
+          <div className="game-head" style={{marginBottom:18}}>
+            <button className="game-back" onClick={onBack}>← All games</button>
+            <h2>{game.title}</h2>
+            <span className="stats">{game.tag}</span>
+          </div>
+          <div className="game">{Body}</div>
+        </>
+      );
+    }
+
+    /* ───────── SNAKE ───────── */
+    function Snake(){
+      const SIZE = 18;
+      const CELL = 20;
+      const [snake, setSnake] = useState([{x:9,y:9}]);
+      const [dir, setDir] = useState({x:1,y:0});
+      const [food, setFood] = useState({x:5,y:5});
+      const [dead, setDead] = useState(false);
+      const [score, setScore] = useState(0);
+      const [best, setBest] = useState(()=>+localStorage.getItem('snake_best')||0);
+      const dirRef = useRef(dir);
+      dirRef.current = dir;
+
+      const reset = ()=>{
+        setSnake([{x:9,y:9}]); setDir({x:1,y:0}); setFood({x:5,y:5});
+        setDead(false); setScore(0); dirRef.current={x:1,y:0};
+      };
+      const spawnFood = (snk)=>{
+        let f;
+        do { f = { x: Math.floor(Math.random()*SIZE), y: Math.floor(Math.random()*SIZE) }; }
+        while(snk.some(s=>s.x===f.x&&s.y===f.y));
+        return f;
+      };
+      useEffect(()=>{
+        const turn = (dx,dy)=>{
+          if(dirRef.current.x === -dx && dirRef.current.y === -dy) return;
+          setDir({x:dx,y:dy});
+        };
+        const onKey = e=>{
+          const map = {ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],
+                       w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
+          const m = map[e.key];
+          if(!m) return;
+          turn(m[0], m[1]);
+          e.preventDefault();
+        };
+        let touch = null;
+        const onTS = e=>{ const t=e.touches[0]; touch={x:t.clientX,y:t.clientY}; };
+        const onTE = e=>{
+          if(!touch) return;
+          const t = e.changedTouches[0];
+          const dx = t.clientX - touch.x, dy = t.clientY - touch.y;
+          if(Math.max(Math.abs(dx),Math.abs(dy)) < 20){ touch=null; return; }
+          if(Math.abs(dx) > Math.abs(dy)) turn(dx>0?1:-1, 0);
+          else turn(0, dy>0?1:-1);
+          touch = null;
+        };
+        window.addEventListener('keydown', onKey);
+        window.addEventListener('touchstart', onTS, {passive:true});
+        window.addEventListener('touchend', onTE, {passive:true});
+        return ()=>{
+          window.removeEventListener('keydown', onKey);
+          window.removeEventListener('touchstart', onTS);
+          window.removeEventListener('touchend', onTE);
+        };
+      },[]);
+      useEffect(()=>{
+        if(dead) return;
+        const id = setInterval(()=>{
+          setSnake(prev=>{
+            const head = { x: prev[0].x + dirRef.current.x, y: prev[0].y + dirRef.current.y };
+            if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE||
+               prev.some(s=>s.x===head.x&&s.y===head.y)){
+              setDead(true);
+              setBest(b=>{ const nb=Math.max(b,prev.length-1); localStorage.setItem('snake_best',nb); return nb; });
+              return prev;
+            }
+            const ate = head.x===food.x && head.y===food.y;
+            const next = [head, ...prev];
+            if(!ate) next.pop(); else { setScore(s=>s+1); setFood(spawnFood(next)); }
+            return next;
+          });
+        }, 110);
+        return ()=>clearInterval(id);
+      },[dead, food]);
+
+      const cells = [];
+      for(let y=0;y<SIZE;y++){
+        for(let x=0;x<SIZE;x++){
+          let cls='snake-cell';
+          const idx = snake.findIndex(s=>s.x===x&&s.y===y);
+          if(idx===0) cls+=' head';
+          else if(idx>0) cls+=' snake';
+          else if(food.x===x&&food.y===y) cls+=' food';
+          cells.push(<div key={x+'-'+y} className={cls} />);
+        }
+      }
+      return (
+        <div className="game-body">
+          <div className="game-head" style={{width:'100%'}}>
+            <span className="stats">Score <b>{score}</b></span>
+            <span className="stats">Best <b>{best}</b></span>
+          </div>
+          <div className="snake-board" style={{gridTemplateColumns:`repeat(${SIZE},${CELL}px)`,gridTemplateRows:`repeat(${SIZE},${CELL}px)`,width:SIZE*CELL,height:SIZE*CELL}}>
+            {cells}
+          </div>
+          <div className="game-hint">Arrow keys / WASD on desktop, swipe on mobile. Don't hit the walls or yourself.</div>
+          {dead && <button className="btn primary" onClick={reset}>Play again</button>}
+        </div>
+      );
+    }
+
+    /* ───────── 2048 ───────── */
+    function Game2048(){
+      const empty = ()=> Array.from({length:4},()=>Array(4).fill(0));
+      const addTile = (g)=>{
+        const opts=[]; for(let y=0;y<4;y++)for(let x=0;x<4;x++) if(!g[y][x]) opts.push([y,x]);
+        if(!opts.length) return g;
+        const [y,x] = opts[Math.floor(Math.random()*opts.length)];
+        g[y][x] = Math.random()<.9 ? 2 : 4;
+        return g;
+      };
+      const fresh = ()=>{ let g=empty(); g=addTile(g); g=addTile(g); return g; };
+      const [grid, setGrid] = useState(fresh);
+      const [score, setScore] = useState(0);
+      const [best, setBest] = useState(()=>+localStorage.getItem('b2048_best')||0);
+      const [over, setOver] = useState(false);
+      const [won, setWon] = useState(false);
+
+      const rotate = (g)=>{
+        const n=empty();
+        for(let y=0;y<4;y++)for(let x=0;x<4;x++) n[x][3-y]=g[y][x];
+        return n;
+      };
+      const moveLeft = (g)=>{
+        let gained=0, changed=false;
+        const out = g.map(row=>{
+          const arr = row.filter(v=>v);
+          for(let i=0;i<arr.length-1;i++){
+            if(arr[i]===arr[i+1]){ arr[i]*=2; gained+=arr[i]; arr.splice(i+1,1); }
+          }
+          while(arr.length<4) arr.push(0);
+          return arr;
+        });
+        for(let y=0;y<4;y++)for(let x=0;x<4;x++) if(out[y][x]!==g[y][x]) changed=true;
+        return {grid:out, gained, changed};
+      };
+
+      const move = (dir)=>{
+        if(over) return;
+        let g = grid.map(r=>r.slice());
+        let rots = {left:0,up:1,right:2,down:3}[dir];
+        for(let i=0;i<rots;i++) g = rotate(g);
+        const {grid:moved, gained, changed} = moveLeft(g);
+        let result = moved;
+        for(let i=0;i<(4-rots)%4;i++) result = rotate(result);
+        if(!changed) return;
+        result = addTile(result);
+        setGrid(result);
+        const ns = score + gained;
+        setScore(ns);
+        if(ns>best){ setBest(ns); localStorage.setItem('b2048_best',ns); }
+        if(result.some(r=>r.includes(2048)) && !won) setWon(true);
+        // game over check
+        let canMove=false;
+        for(let y=0;y<4&&!canMove;y++)for(let x=0;x<4&&!canMove;x++){
+          if(!result[y][x]) canMove=true;
+          if(x<3 && result[y][x]===result[y][x+1]) canMove=true;
+          if(y<3 && result[y][x]===result[y+1][x]) canMove=true;
+        }
+        if(!canMove) setOver(true);
+      };
+
+      useEffect(()=>{
+        const onKey = e=>{
+          const m = {ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',
+                     a:'left',d:'right',w:'up',s:'down'}[e.key];
+          if(m){ e.preventDefault(); move(m); }
+        };
+        window.addEventListener('keydown', onKey);
+        return ()=>window.removeEventListener('keydown', onKey);
+      });
+
+      // touch swipe
+      const touch = useRef(null);
+      const onTS = e=>{ const t=e.touches[0]; touch.current={x:t.clientX,y:t.clientY}; };
+      const onTE = e=>{
+        if(!touch.current) return;
+        const t=e.changedTouches[0];
+        const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y;
+        if(Math.max(Math.abs(dx),Math.abs(dy))<20) return;
+        if(Math.abs(dx)>Math.abs(dy)) move(dx>0?'right':'left');
+        else move(dy>0?'down':'up');
+        touch.current=null;
+      };
+
+      const reset = ()=>{ setGrid(fresh()); setScore(0); setOver(false); setWon(false); };
+
+      return (
+        <div className="game-body">
+          <div className="game-head" style={{width:'100%'}}>
+            <span className="stats">Score <b>{score}</b></span>
+            <span className="stats">Best <b>{best}</b></span>
+          </div>
+          <div className="b2048" onTouchStart={onTS} onTouchEnd={onTE}>
+            {grid.flatMap((row,y)=>row.map((v,x)=>(
+              <div key={y+'-'+x} className="cell" data-v={v||''}>{v||''}</div>
+            )))}
+          </div>
+          <div className="game-hint">Arrow keys / WASD on desktop, swipe on mobile.</div>
+          {(over||won) && (
+            <div style={{display:'flex',gap:10,alignItems:'center'}}>
+              <span className="stats">{won?'You hit 2048! 🎉':'Game over'}</span>
+              <button className="btn primary" onClick={reset}>{won?'Keep going':'Try again'}</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    /* ───────── MEMORY ───────── */
+    function Memory(){
+      const ICONS = ['◆','▲','●','■','✦','✺','✸','✷'];
+      const shuffle = ()=>{
+        const arr = [...ICONS, ...ICONS].map((v,i)=>({id:i, v, flipped:false, matched:false}));
+        for(let i=arr.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [arr[i],arr[j]]=[arr[j],arr[i]];
+        }
+        return arr;
+      };
+      const [cards, setCards] = useState(shuffle);
+      const [picks, setPicks] = useState([]);
+      const [moves, setMoves] = useState(0);
+      const [best, setBest] = useState(()=>+localStorage.getItem('mem_best')||0);
+      const [done, setDone] = useState(false);
+
+      const flip = (idx)=>{
+        if(picks.length>=2) return;
+        if(cards[idx].flipped || cards[idx].matched) return;
+        const next = cards.map((c,i)=> i===idx?{...c,flipped:true}:c);
+        const newPicks = [...picks, idx];
+        setCards(next); setPicks(newPicks);
+        if(newPicks.length===2){
+          setMoves(m=>m+1);
+          const [a,b] = newPicks;
+          if(next[a].v===next[b].v){
+            setTimeout(()=>{
+              setCards(cs=>cs.map((c,i)=> (i===a||i===b) ? {...c,matched:true} : c));
+              setPicks([]);
+            }, 350);
+          } else {
+            setTimeout(()=>{
+              setCards(cs=>cs.map((c,i)=> (i===a||i===b)?{...c,flipped:false}:c));
+              setPicks([]);
+            }, 700);
+          }
+        }
+      };
+      useEffect(()=>{
+        if(cards.length && cards.every(c=>c.matched) && !done){
+          setDone(true);
+          if(!best || moves < best){ setBest(moves); localStorage.setItem('mem_best', moves); }
+        }
+      },[cards, moves, done, best]);
+
+      const reset = ()=>{ setCards(shuffle()); setPicks([]); setMoves(0); setDone(false); };
+
+      return (
+        <div className="game-body">
+          <div className="game-head" style={{width:'100%'}}>
+            <span className="stats">Moves <b>{moves}</b></span>
+            <span className="stats">Best <b>{best||'—'}</b></span>
+          </div>
+          <div className="mem-grid">
+            {cards.map((c,i)=>(
+              <div key={c.id}
+                className={'mem-card'+(c.flipped?' flipped':'')+(c.matched?' matched':'')}
+                onClick={()=>flip(i)}>
+                {(c.flipped||c.matched) ? c.v : ''}
+              </div>
+            ))}
+          </div>
+          <div className="game-hint">Flip two cards. Match all 8 pairs in as few moves as you can.</div>
+          {done && <div style={{display:'flex',gap:10,alignItems:'center'}}>
+            <span className="stats">Cleared in {moves} moves</span>
+            <button className="btn primary" onClick={reset}>Shuffle</button>
+          </div>}
+        </div>
+      );
+    }
+
+    /* ───────── TIC-TAC-TOE ───────── */
+    function TicTacToe(){
+      const [board, setBoard] = useState(Array(9).fill(null));
+      const [turn, setTurn] = useState('x');
+      const [over, setOver] = useState(null); // 'x'|'o'|'draw'|null
+      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      const winner = b=>{
+        for(const [a,c,d] of lines) if(b[a] && b[a]===b[c] && b[a]===b[d]) return b[a];
+        if(b.every(v=>v)) return 'draw';
+        return null;
+      };
+      const minimax = (b, isMax)=>{
+        const w = winner(b);
+        if(w==='o') return {score:1};
+        if(w==='x') return {score:-1};
+        if(w==='draw') return {score:0};
+        let best = isMax ? {score:-Infinity} : {score:Infinity};
+        for(let i=0;i<9;i++){
+          if(!b[i]){
+            b[i] = isMax ? 'o' : 'x';
+            const r = minimax(b, !isMax);
+            b[i] = null;
+            if(isMax ? r.score>best.score : r.score<best.score){
+              best = {score:r.score, idx:i};
+            }
+          }
+        }
+        return best;
+      };
+      const cpuMove = useCallback((b)=>{
+        const copy = b.slice();
+        const {idx} = minimax(copy, true);
+        if(idx==null) return;
+        const next = b.slice();
+        next[idx] = 'o';
+        setBoard(next);
+        const w = winner(next);
+        if(w){ setOver(w); } else setTurn('x');
+      },[]);
+      const click = (i)=>{
+        if(over || board[i] || turn!=='x') return;
+        const next = board.slice();
+        next[i] = 'x';
+        setBoard(next);
+        const w = winner(next);
+        if(w){ setOver(w); return; }
+        setTurn('o');
+        setTimeout(()=>cpuMove(next), 280);
+      };
+      const reset = ()=>{ setBoard(Array(9).fill(null)); setTurn('x'); setOver(null); };
+      const statusText = over==='x'?'You win — somehow.':over==='o'?'CPU wins.':over==='draw'?'Draw.':turn==='x'?'Your move':'CPU thinking…';
+      return (
+        <div className="game-body">
+          <div className="ttt">
+            {board.map((v,i)=>(
+              <div key={i} className={'ttt-cell'+(v?' taken '+v:'')} onClick={()=>click(i)}>
+                {v?v.toUpperCase():''}
+              </div>
+            ))}
+          </div>
+          <div className="game-hint">{statusText}</div>
+          <button className="btn" onClick={reset}>Reset</button>
+        </div>
+      );
+    }
+
+    /* ───────── REACTION ───────── */
+    function Reaction(){
+      const [state, setState] = useState('idle'); // idle|waiting|ready|go|result|early
+      const [time, setTime] = useState(0);
+      const [best, setBest] = useState(()=>+localStorage.getItem('react_best')||0);
+      const tRef = useRef(0);
+      const timeoutRef = useRef(0);
+
+      const start = ()=>{
+        setState('ready');
+        setTime(0);
+        const wait = 900 + Math.random()*2400;
+        timeoutRef.current = setTimeout(()=>{
+          tRef.current = performance.now();
+          setState('go');
+        }, wait);
+      };
+      const click = ()=>{
+        if(state==='idle' || state==='result' || state==='early'){ start(); return; }
+        if(state==='ready'){
+          clearTimeout(timeoutRef.current);
+          setState('early');
+          return;
+        }
+        if(state==='go'){
+          const ms = Math.round(performance.now() - tRef.current);
+          setTime(ms);
+          setState('result');
+          if(!best || ms<best){ setBest(ms); localStorage.setItem('react_best', ms); }
+        }
+      };
+      useEffect(()=>()=>clearTimeout(timeoutRef.current),[]);
+
+      const cls = state==='ready'?'react-pad ready':state==='go'?'react-pad go':(state==='result'||state==='early')?'react-pad result':'react-pad waiting';
+      const text = state==='idle' ? 'Click to start'
+                 : state==='ready' ? 'Wait for green…'
+                 : state==='go' ? 'CLICK!'
+                 : state==='early' ? 'Too early — click to retry'
+                 : state==='result' ? `${time} ms — click to try again`
+                 : '';
+      return (
+        <div className="game-body">
+          <div className="game-head" style={{width:'100%'}}>
+            <span className="stats">Last <b>{time?time+' ms':'—'}</b></span>
+            <span className="stats">Best <b>{best?best+' ms':'—'}</b></span>
+          </div>
+          <div className={cls} onClick={click}>{text}</div>
+          <div className="game-hint">Click when the panel turns green. Clicking early resets.</div>
+        </div>
+      );
+    }
+
+    /* ───────── BREAKOUT ───────── */
+    function Breakout(){
+      const canvasRef = useRef(null);
+      const [score, setScore] = useState(0);
+      const [best, setBest] = useState(()=>+localStorage.getItem('break_best')||0);
+      const [lives, setLives] = useState(3);
+      const [over, setOver] = useState(false);
+      const stateRef = useRef(null);
+      const rafRef = useRef(0);
+      const scoreRef = useRef(0);
+      useEffect(()=>{ scoreRef.current = score; },[score]);
+
+      const init = ()=>{
+        const W = 480, H = 320;
+        const paddle = { w: 70, h: 8, x: W/2-35, y: H-22 };
+        const ball   = { x: W/2, y: H-40, vx: 2.2, vy: -2.6, r: 5 };
+        const bricks = [];
+        const cols=8, rows=4, bw=52, bh=14, bx=8, by=24, gap=4;
+        for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+          bricks.push({ x: bx + c*(bw+gap), y: by + r*(bh+gap), w:bw, h:bh, alive:true, row:r });
+        }
+        return { W, H, paddle, ball, bricks };
+      };
+      const reset = ()=>{
+        stateRef.current = init();
+        setScore(0); setLives(3); setOver(false);
+      };
+
+      useEffect(()=>{
+        const canvas = canvasRef.current;
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        stateRef.current = stateRef.current || init();
+        const s = stateRef.current;
+        canvas.width = s.W; canvas.height = s.H;
+        let mx = s.paddle.x + s.paddle.w/2;
+        const onMove = e=>{
+          const r = canvas.getBoundingClientRect();
+          mx = ((e.clientX || (e.touches && e.touches[0].clientX)) - r.left) * (s.W / r.width);
+        };
+        canvas.addEventListener('mousemove', onMove);
+        canvas.addEventListener('touchmove', onMove, {passive:true});
+
+        const rowColors = ['#ff7a7a','#ffd17a','#9bb6ff','#c8ff3f'];
+        const tick = ()=>{
+          const s = stateRef.current;
+          // paddle follow
+          s.paddle.x = Math.max(0, Math.min(s.W - s.paddle.w, mx - s.paddle.w/2));
+          // ball move
+          s.ball.x += s.ball.vx;
+          s.ball.y += s.ball.vy;
+          // walls
+          if(s.ball.x < s.ball.r){ s.ball.x = s.ball.r; s.ball.vx *= -1; }
+          if(s.ball.x > s.W - s.ball.r){ s.ball.x = s.W - s.ball.r; s.ball.vx *= -1; }
+          if(s.ball.y < s.ball.r){ s.ball.y = s.ball.r; s.ball.vy *= -1; }
+          // paddle hit
+          if(s.ball.y + s.ball.r >= s.paddle.y &&
+             s.ball.y < s.paddle.y + s.paddle.h &&
+             s.ball.x > s.paddle.x && s.ball.x < s.paddle.x + s.paddle.w &&
+             s.ball.vy > 0){
+            s.ball.vy *= -1;
+            const hit = (s.ball.x - (s.paddle.x + s.paddle.w/2)) / (s.paddle.w/2);
+            s.ball.vx = hit * 3.6;
+          }
+          // brick collision
+          for(const b of s.bricks){
+            if(!b.alive) continue;
+            if(s.ball.x > b.x && s.ball.x < b.x + b.w &&
+               s.ball.y - s.ball.r < b.y + b.h && s.ball.y + s.ball.r > b.y){
+              b.alive = false;
+              s.ball.vy *= -1;
+              setScore(v=>v+10);
+              break;
+            }
+          }
+          // miss
+          if(s.ball.y > s.H + 10){
+            setLives(L=>{
+              const next = L-1;
+              if(next<=0){
+                setOver(true);
+                const final = scoreRef.current;
+                setBest(b=>{ const nb=Math.max(b,final); localStorage.setItem('break_best',nb); return nb; });
+              } else {
+                s.ball.x = s.W/2; s.ball.y = s.H-40;
+                s.ball.vx = (Math.random()<.5?-1:1)*2.2; s.ball.vy = -2.6;
+              }
+              return next;
+            });
+          }
+          // all bricks cleared
+          if(s.bricks.every(b=>!b.alive)){
+            // regenerate harder
+            s.bricks.forEach(b=>{ b.alive=true; });
+            s.ball.vx *= 1.1; s.ball.vy *= 1.1;
+          }
+
+          // draw
+          ctx.clearRect(0,0,s.W,s.H);
+          // bricks
+          for(const b of s.bricks){
+            if(!b.alive) continue;
+            ctx.fillStyle = rowColors[b.row % rowColors.length];
+            ctx.globalAlpha = .85;
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+          }
+          ctx.globalAlpha = 1;
+          // paddle
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(s.paddle.x, s.paddle.y, s.paddle.w, s.paddle.h);
+          // ball
+          ctx.fillStyle = '#c8ff3f';
+          ctx.beginPath(); ctx.arc(s.ball.x, s.ball.y, s.ball.r, 0, Math.PI*2); ctx.fill();
+
+          if(!over) rafRef.current = requestAnimationFrame(tick);
+        };
+        rafRef.current = requestAnimationFrame(tick);
+        return ()=>{
+          cancelAnimationFrame(rafRef.current);
+          canvas.removeEventListener('mousemove', onMove);
+          canvas.removeEventListener('touchmove', onMove);
+        };
+      },[over]);
+
+      useEffect(()=>{
+        if(score > best){ setBest(score); localStorage.setItem('break_best', score); }
+      },[score, best]);
+
+      return (
+        <div className="game-body">
+          <div className="game-head" style={{width:'100%'}}>
+            <span className="stats">Score <b>{score}</b></span>
+            <span className="stats">Lives <b>{lives}</b></span>
+            <span className="stats">Best <b>{best}</b></span>
+          </div>
+          <canvas ref={canvasRef} className="breakout-canvas" style={{maxWidth:'100%'}} />
+          <div className="game-hint">Move the mouse (or finger) to control the paddle.</div>
+          {over && <button className="btn primary" onClick={reset}>Play again</button>}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
