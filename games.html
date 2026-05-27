@@ -182,12 +182,31 @@
     ];
 
     function App(){
-      const [active, setActive] = useState(null);
+      const [active, setActive] = useState(()=>{
+        const h = (typeof window!=='undefined' && window.location.hash || '').replace(/^#/,'');
+        return GAMES.some(g=>g.id===h) ? h : null;
+      });
+
+      const pick = (id)=>{
+        window.history.pushState({game:id}, '', '#'+id);
+        setActive(id);
+      };
+      const goBack = ()=>{ window.history.back(); };
+
+      useEffect(()=>{
+        const onPop = ()=>{
+          const h = (window.location.hash || '').replace(/^#/,'');
+          setActive(GAMES.some(g=>g.id===h) ? h : null);
+        };
+        window.addEventListener('popstate', onPop);
+        return ()=> window.removeEventListener('popstate', onPop);
+      },[]);
+
       if(active){
         const g = GAMES.find(x=>x.id===active);
-        return <GamePage game={g} onBack={()=>setActive(null)} />;
+        return <GamePage game={g} onBack={goBack} />;
       }
-      return <Hub onPick={setActive} />;
+      return <Hub onPick={pick} />;
     }
 
     function Hub({ onPick }){
