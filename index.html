@@ -183,9 +183,9 @@
       --accent-ink:#0a0a0a;
       --grain-opacity:.05;
 
-      --serif:'Instrument Serif', 'Times New Roman', serif;
-      --serif-2:'Fraunces','Instrument Serif',serif;
-      --sans:'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --serif:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --serif-2:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --sans:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
       --mono:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
       --pad-x: clamp(20px, 3vw, 44px);
@@ -211,6 +211,8 @@
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;overflow-x:hidden;width:100%;scrollbar-width:none;-ms-overflow-style:none}
     html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+    .space-bg{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:0;opacity:1}
+    @media (prefers-reduced-motion:reduce){.space-bg{display:none}}
     html{background:var(--bg);color:var(--fg);scroll-behavior:smooth}
     body{
       font-family:var(--sans),sans-serif;font-size:16px;line-height:1.55;color:var(--fg);background:var(--bg);
@@ -234,22 +236,42 @@
     html[data-theme="light"] .grain{mix-blend-mode:multiply;opacity:.06}
 
     /* Cursor */
-    .cursor{position:fixed;left:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--fg);
+    /* Star cursor: bright core + 4-point + 4-diagonal spike flare */
+    .cursor{position:fixed;left:0;top:0;width:0;height:0;
       z-index:2147483640;pointer-events:none;transform:translate(-50%,-50%);
-      transition:width .25s var(--ease),height .25s var(--ease),background .15s,opacity .2s;will-change:transform}
-    .cursor-ring{position:fixed;left:0;top:0;width:36px;height:36px;border:1px solid var(--fg);border-radius:50%;
-      z-index:2147483639;pointer-events:none;transform:translate(-50%,-50%);opacity:.45;
-      transition:width .3s var(--ease),height .3s var(--ease),opacity .2s,border-color .15s,background .2s;will-change:transform}
-    body.cursor-hover .cursor{width:0;height:0}
-    body.cursor-hover .cursor-ring{width:72px;height:72px;border-color:var(--accent);opacity:1;background:rgba(200,255,63,0.05)}
-    body.cursor-text .cursor{width:2px;height:24px;border-radius:1px}
-    body.cursor-text .cursor-ring{opacity:0}
-    body.cursor-view .cursor{width:0;height:0}
-    body.cursor-view .cursor-ring{width:90px;height:90px;background:var(--accent);border-color:var(--accent);opacity:1;color:var(--accent-ink)}
+      transition:opacity .2s,filter .2s;will-change:transform}
+    .cursor::before{content:"";position:absolute;left:50%;top:50%;
+      width:3px;height:3px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);
+      box-shadow:
+        0 0 6px 1px rgba(255,255,255,.85),
+        0 0 14px 3px rgba(200,220,255,.4),
+        0 0 30px 8px rgba(160,190,255,.18)}
+    .cursor::after{content:"";position:absolute;left:50%;top:50%;
+      width:1px;height:48px;transform:translate(-50%,-50%);
+      background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.9) 50%,transparent 100%)}
+    .cursor-ring{position:fixed;left:0;top:0;width:0;height:0;border:0;background:transparent;
+      z-index:2147483639;pointer-events:none;transform:translate(-50%,-50%);opacity:1;
+      transition:opacity .2s,filter .2s;will-change:transform}
+    .cursor-ring::before{content:"";position:absolute;left:50%;top:50%;
+      width:48px;height:1px;transform:translate(-50%,-50%);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.9) 50%,transparent 100%)}
+    .cursor-ring::after{content:"";position:absolute;left:50%;top:50%;
+      width:34px;height:1px;transform:translate(-50%,-50%) rotate(45deg);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.55) 50%,transparent 100%);
+      box-shadow:0 0 0 transparent}
+    /* Second diagonal via cursor-label (kept invisible when no label) */
+    .cursor-label::before{content:"";position:absolute;left:50%;top:50%;
+      width:34px;height:1px;transform:translate(-50%,-50%) rotate(-45deg);
+      background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.55) 50%,transparent 100%)}
+    body.cursor-hover .cursor{filter:drop-shadow(0 0 6px var(--accent))}
+    body.cursor-hover .cursor::before{background:var(--accent);box-shadow:0 0 14px 4px var(--accent),0 0 36px 10px rgba(200,255,63,.4)}
+    body.cursor-text .cursor::after,body.cursor-text .cursor-ring::before,body.cursor-text .cursor-ring::after,body.cursor-text .cursor-label::before{opacity:0}
+    body.cursor-text .cursor::before{width:2px;height:22px;border-radius:1px;box-shadow:none}
+    body.cursor-view .cursor::before{width:0;height:0;box-shadow:none}
     .cursor-label{position:fixed;left:0;top:0;z-index:2147483641;pointer-events:none;
-      transform:translate(-50%,-50%);opacity:0;font-family:var(--mono),monospace;font-size:11px;
-      text-transform:uppercase;letter-spacing:.08em;color:var(--accent-ink);transition:opacity .15s}
-    body.cursor-view .cursor-label{opacity:1}
+      transform:translate(-50%,-50%);opacity:1;font-family:var(--mono),monospace;font-size:11px;
+      text-transform:uppercase;letter-spacing:.08em;color:transparent;transition:color .15s}
+    body.cursor-view .cursor-label{color:var(--accent-ink)}
     @media (hover:none),(pointer:coarse){.cursor,.cursor-ring,.cursor-label{display:none}}
 
     /* Scroll progress hairline */
@@ -266,9 +288,11 @@
     .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
     .nav-links a:hover{color:#fff}
     .nav-links a:hover::after{transform:scaleX(1)}
-    .nav-cta{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid rgba(255,255,255,.45);border-radius:999px;font-family:var(--mono),monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+    .nav-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:8px 14px;min-width:108px;height:32px;border:1px solid rgba(255,255,255,.45);border-radius:999px;font-family:var(--mono),monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-decoration:none}
     .nav-cta:hover{background:rgba(255,255,255,.06)}
+    .nav-right{display:flex;gap:8px;align-items:center}
     .nav-kbd{font-family:var(--mono),monospace;font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,.45)}
+    @media (hover:none),(pointer:coarse){.nav-kbd{display:none}.cmd-foot .cmd-kbd{display:none}.cmd-foot{justify-content:flex-start}}
     @media (max-width:880px){ .nav-links{display:none} }
 
     /* Section scaffold */
@@ -293,26 +317,27 @@
       position:relative;
     }
     @media (max-width:900px){
-      .hero{grid-template-columns:1fr;gap:32px;padding:104px var(--pad-x) 48px;align-items:start}
+      .hero{grid-template-columns:1fr;gap:10px;padding:88px var(--pad-x) 32px;align-items:center;justify-items:center;text-align:center}
       .hero .hero-text{display:contents}
-      .hero .hero-eyebrow{order:1}
+      .hero .hero-eyebrow{order:1;margin:0 0 4px;justify-content:center}
       .hero .hero-portrait-wrap{order:2}
-      .hero .hero-title{order:3}
-      .hero .hero-tagline{order:4}
-      .hero .hero-paragraph{order:5}
-      .hero .hero-actions{order:6}
+      .hero .hero-title{order:3;align-items:center;margin:0}
+      .hero .hero-tagline{order:4;margin:0}
+      .hero .hero-paragraph{display:none}
+      .hero .hero-actions{order:6;margin:4px 0 0;justify-content:center}
     }
     @media (min-width:901px) and (max-width:1279px){
       .hero-title{font-size:clamp(72px,11vw,140px)}
     }
 
     /* Hero text */
-    .hero-text{display:flex;flex-direction:column;gap:24px;min-width:0}
+    .hero-text{display:flex;flex-direction:column;gap:14px;min-width:0}
 
     .hero-eyebrow{
       display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;
       font-family:var(--mono),monospace;font-size:11px;
       letter-spacing:.14em;text-transform:uppercase;color:var(--fg-mute);
+      margin-bottom:18px;
     }
     .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(200,255,63,.18);animation:pulse 2s ease-in-out infinite}
     @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(200,255,63,0)}}
@@ -320,19 +345,17 @@
     .hero-eyebrow .sep{color:var(--fg-dim);opacity:.6}
 
     .hero-title{
-      font-family:var(--serif),serif;font-weight:400;font-style:italic;
-      font-size:clamp(66px, 12vw, 184px);
-      line-height:.92;letter-spacing:-.02em;text-transform:none;
+      font-family:var(--mono),monospace;font-weight:400;font-style:normal;
+      font-size:clamp(60px, 10.8vw, 168px);
+      line-height:.88;letter-spacing:.02em;text-transform:uppercase;
       margin:4px 0 0;color:var(--fg);
       display:flex;flex-direction:column;
     }
-    .hero-title .ht-first{display:block}
+    .hero-title .ht-first,
     .hero-title .ht-last{
       display:block;
-      font-family:var(--mono),monospace;
-      font-style:normal;font-weight:400;
-      text-transform:uppercase;letter-spacing:.04em;
-      line-height:.95;
+      font-family:inherit;font-style:inherit;font-weight:inherit;
+      text-transform:inherit;letter-spacing:inherit;line-height:inherit;
     }
 
     .hero-tagline{
@@ -358,11 +381,7 @@
     .hero-portrait-wrap{
       position:relative;display:flex;align-items:center;justify-content:flex-end;min-width:0;
     }
-    .hero-portrait-wrap::before{
-      content:"";position:absolute;inset:auto -8% -10% -8%;height:60%;
-      background:radial-gradient(60% 70% at 50% 60%, var(--accent-soft), transparent 70%);
-      filter:blur(40px);pointer-events:none;z-index:0;
-    }
+    .hero-portrait-wrap::before{content:none}
     @media (max-width:900px){
       .hero-portrait-wrap{order:2;justify-content:center}
     }
@@ -382,14 +401,13 @@
     .hero-portrait.in{transform:translateY(0);opacity:1}
     .hero-portrait img{
       width:100%;height:100%;object-fit:cover;object-position:center top;
-      filter:grayscale(1) contrast(1.05) brightness(.95);
+      filter:none;
       transform:scale(1.04);
       transition:transform 6s linear;
     }
     .hero-portrait:hover img{transform:scale(1.08)}
     .hero-portrait .duotone{
       position:absolute;inset:0;background:
-        radial-gradient(80% 60% at 100% 100%, var(--accent-soft), transparent 60%),
         linear-gradient(180deg, transparent 55%, rgba(0,0,0,.42) 100%);
       mix-blend-mode:normal;opacity:1;pointer-events:none;z-index:2;
     }
@@ -429,6 +447,7 @@
     .proof-row{display:flex;flex-direction:column;gap:4px;border-left:1px solid var(--line);padding-left:18px}
     .proof-row:first-child{border-left:0;padding-left:0}
     @media (max-width:980px){.proof-row{border-left:0;padding-left:0}}
+    @media (max-width:760px){.proof-row:last-child{display:none}}
     .proof-num{font-family:var(--serif),serif;font-size:clamp(36px,4.2vw,56px);line-height:.9;letter-spacing:-.02em;color:var(--fg)}
     .proof-num .u{color:var(--fg-mute);font-family:var(--sans),sans-serif;font-size:.45em;font-weight:300;letter-spacing:0;vertical-align:0.3em}
     .proof-lbl{font-family:var(--mono),monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-mute);max-width:22ch}
@@ -474,7 +493,7 @@
     .about-prose p{
       font-family:var(--serif-2),serif;font-weight:400;
       font-size:clamp(20px,2.2vw,28px);line-height:1.35;letter-spacing:-.005em;color:var(--fg);margin:0;
-      max-width:30ch;
+      max-width:none;
     }
     .about-prose p:nth-child(2){color:var(--fg-mute)}
     .about-prose strong{font-weight:400;font-style:italic;color:var(--accent)}
@@ -621,12 +640,10 @@
     /* ─────────── CONTACT ─────────── */
     .contact{padding:96px var(--pad-x) 60px;max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:80px;align-items:start}
     @media (max-width:980px){.contact{grid-template-columns:1fr;gap:40px}}
-    .contact-lead{font-family:var(--serif),serif;font-size:clamp(48px,8vw,128px);line-height:.92;letter-spacing:-.025em;font-weight:400;margin:0}
+    .contact-lead{font-family:var(--serif),serif;font-size:clamp(34px,4.6vw,72px);line-height:1;letter-spacing:-.02em;font-weight:400;margin:0}
     .contact-lead .it{font-style:italic;color:var(--fg-mute)}
     .contact-lead .acc{color:var(--accent);position:relative}
-    .contact-lead a{color:var(--accent);position:relative;display:inline-block}
-    .contact-lead a::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:.06em;background:currentColor;transform-origin:left;transition:transform .35s var(--ease)}
-    .contact-lead a:hover::after{transform:scaleX(.6)}
+    .contact-lead a{color:var(--accent);position:relative;display:inline-block;text-decoration:none}
     .contact-side{display:flex;flex-direction:column;gap:32px;font-size:14px;color:var(--fg-mute);padding-top:12px}
     .contact-side h4{font-family:var(--mono),monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-dim);margin:0 0 14px}
     .contact-list{display:flex;flex-direction:column;gap:0}
@@ -684,7 +701,7 @@
       .hero-text{gap:20px}
       .hero-portrait{max-width:200px;aspect-ratio:4/4.2}
       .hero-portrait::before,.hero-portrait::after{content:none}
-      .hero-title{font-size:clamp(56px,16vw,112px);letter-spacing:-.018em;line-height:.92}
+      .hero-title{font-size:clamp(44px,12vw,84px);letter-spacing:.01em;line-height:.92}
       .hero-tagline{font-size:clamp(18px,4.6vw,22px);max-width:none}
       .hero-paragraph{font-size:15px}
       .hero-eyebrow{font-size:10.5px;gap:8px}
@@ -723,7 +740,7 @@
       .role-title{font-size:22px}
     }
     @media (max-width:420px){
-      .hero-title{font-size:clamp(52px,18vw,92px)}
+      .hero-title{font-size:clamp(40px,13vw,68px)}
       .feature-title{font-size:36px}
       .contact-lead{font-size:44px}
     }
@@ -754,10 +771,13 @@
       <!--suppress HtmlUnknownAnchorTarget --><a href="#stack">Stack</a>
       <!--suppress HtmlUnknownAnchorTarget --><a href="#contact">Contact</a>
     </div>
-    <button class="nav-cta" id="cmd-open" data-cursor>
-      <span>Search</span>
-      <span class="nav-kbd">⌘K</span>
-    </button>
+    <div class="nav-right">
+      <a href="games.html" class="nav-cta nav-games" data-cursor><span>Games</span></a>
+      <button class="nav-cta" id="cmd-open" data-cursor>
+        <span>Search</span>
+        <span class="nav-kbd">⌘K</span>
+      </button>
+    </div>
   </nav>
 
   <div id="root"></div>
@@ -948,6 +968,7 @@
       ['Hugging Face','DKethan','https://huggingface.co/DKethan'],
       ['Medium','@kethandosapati','https://medium.com/@kethandosapati'],
       ['Instagram','@kethandosapati','https://www.instagram.com/kethandosapati'],
+      ['Resume','View / download','https://docs.google.com/document/d/1Z3PdYQE02HJu6Y1_OfzASRpdvWXy8yMgmEJHW-55xZ0/edit?usp=sharing'],
     ];
 
     /* ───────────────────────── HOOKS ───────────────────────── */
@@ -1007,6 +1028,272 @@
       return <span className="scramble" onMouseEnter={onEnter}>{display}</span>;
     }
 
+    function SpaceBg(){
+      const ref = useRef(null);
+      useEffect(()=>{
+        const canvas = ref.current; if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let W = 0, H = 0, stars = [], shooting = null, nextShoot = 0;
+
+        // Pre-rendered star sprite (small core + four faint spikes, no big glow)
+        const SPRITE = (()=>{
+          const S = 24;
+          const c = document.createElement('canvas');
+          c.width = c.height = S;
+          const cx2 = S/2, cy2 = S/2;
+          const sctx = c.getContext('2d');
+          // tiny bright core
+          const core = sctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, 2.2);
+          core.addColorStop(0,'rgba(255,255,255,1)');
+          core.addColorStop(1,'rgba(255,255,255,0)');
+          sctx.fillStyle = core;
+          sctx.beginPath(); sctx.arc(cx2, cy2, 2.2, 0, Math.PI*2); sctx.fill();
+          // 4 tapered spikes
+          const drawSpike = (angle)=>{
+            sctx.save();
+            sctx.translate(cx2, cy2);
+            sctx.rotate(angle);
+            const len = S/2 - 1;
+            const grad = sctx.createLinearGradient(0,0, len,0);
+            grad.addColorStop(0, 'rgba(255,255,255,.85)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            sctx.fillStyle = grad;
+            sctx.beginPath();
+            sctx.moveTo(0, -.55);
+            sctx.lineTo(len, 0);
+            sctx.lineTo(0, .55);
+            sctx.closePath();
+            sctx.fill();
+            sctx.restore();
+          };
+          drawSpike(0);
+          drawSpike(Math.PI);
+          drawSpike(Math.PI/2);
+          drawSpike(-Math.PI/2);
+          return c;
+        })();
+
+        const LAYERS = [
+          { count: 80, speed: .015, sizeMin: .3, sizeMax: .9, alphaMin: .25, alphaMax: .55, twinkle: .35 },
+          { count: 55, speed: .035, sizeMin: .6, sizeMax: 1.4, alphaMin: .35, alphaMax: .75, twinkle: .5 },
+          { count: 28, speed: .07,  sizeMin: 1.1, sizeMax: 1.9, alphaMin: .55, alphaMax: 1,   twinkle: .7 },
+        ];
+        // Galaxies drift extremely slowly and stay off-screen most of the time
+        const GALAXY_DEFS = [
+          { cxFrac: 1.4, cyFrac: .78, radius: .42, arms: 2, armPoints: 900, haloPoints: 500, nebulaPoints: 180,
+            twist: 5.6, armSpread: .22, tilt: .42, rotation: -.42, rotSpeed: .03,
+            vxFrac: -.0045, vyFrac: -.0008,
+            palette: { halo:'rgba(80,90,200,', mid:'rgba(255,180,210,', mid2:'rgba(230,130,200,', outer:'rgba(150,90,220,', core:'rgba(255,255,250,', core2:'rgba(255,235,210,', accent:'rgba(255,170,200,' },
+          },
+          { cxFrac: -.5, cyFrac: -.4, radius: .22, arms: 2, armPoints: 420, haloPoints: 220, nebulaPoints: 90,
+            twist: 6.2, armSpread: .26, tilt: .55, rotation: .8, rotSpeed: .045,
+            vxFrac: .0015, vyFrac: .0035,
+            palette: { halo:'rgba(60,120,200,', mid:'rgba(160,210,255,', mid2:'rgba(110,180,240,', outer:'rgba(70,140,220,', core:'rgba(245,250,255,', core2:'rgba(210,230,255,', accent:'rgba(170,210,255,' },
+          },
+        ];
+        let galaxies = [];
+        const seedGalaxy = (def)=>{
+          const R = Math.min(W, H) * def.radius;
+          const stars = [];
+          const nebulae = [];
+          const armPaletteOrder = ['mid','mid2','outer','halo'];
+          for(let arm=0; arm<def.arms; arm++){
+            const armOffset = (arm / def.arms) * Math.PI * 2;
+            for(let i=0; i<def.armPoints; i++){
+              const tNorm = Math.pow(Math.random(), .9);
+              const r = tNorm * R;
+              const armAngle = armOffset + tNorm * def.twist;
+              const jitter = (Math.random()-.5) * def.armSpread * (1 - tNorm*.6);
+              const ang = armAngle + jitter;
+              const size = .3 + Math.random()*1.1 * (1 - tNorm*.4);
+              const alpha = (.45 + Math.random()*.55) * (1 - tNorm*.35);
+              const palette = ['#ffffff','#ffe6f0','#e6c6ff','#b8caff','#ffd6a8'];
+              const color = palette[Math.floor(Math.random()*palette.length)];
+              stars.push({ r0:r, a0:ang, size, alpha, color, ph:Math.random()*Math.PI*2 });
+            }
+            for(let i=0; i<def.nebulaPoints/def.arms; i++){
+              const tNorm = Math.pow(Math.random(), .85);
+              const r = tNorm * R;
+              const armAngle = armOffset + tNorm * def.twist + (Math.random()-.5)*.18;
+              const blobR = 18 + Math.random()*46 * (1 - tNorm*.4);
+              const idx = Math.min(armPaletteOrder.length-1, Math.floor(tNorm * armPaletteOrder.length));
+              const alpha = (.10 + Math.random()*.18) * (1 - tNorm*.3);
+              nebulae.push({ r0:r, a0:armAngle, blobR, key:armPaletteOrder[idx], alpha });
+            }
+          }
+          for(let i=0;i<def.haloPoints;i++){
+            const r = R * (.05 + Math.pow(Math.random(),1.8)*1.15);
+            const ang = Math.random()*Math.PI*2;
+            stars.push({
+              r0:r, a0:ang,
+              size:.25 + Math.random()*.6,
+              alpha:(.15 + Math.random()*.35) * Math.max(0,1 - r/R*.8),
+              color:'#ffffff', ph:Math.random()*Math.PI*2,
+            });
+          }
+          return { def, R, stars, nebulae, x: def.cxFrac*W, y: def.cyFrac*H, vx: def.vxFrac*W, vy: def.vyFrac*H };
+        };
+
+        const seed = ()=>{
+          stars = [];
+          for(const L of LAYERS){
+            for(let i=0;i<L.count;i++){
+              stars.push({
+                x: Math.random()*W, y: Math.random()*H,
+                vx:(Math.random()*.5+.5)*L.speed*(Math.random()<.5?-1:1),
+                vy:(Math.random()-.5)*L.speed*.2,
+                r:L.sizeMin+Math.random()*(L.sizeMax-L.sizeMin),
+                a0:L.alphaMin+Math.random()*(L.alphaMax-L.alphaMin),
+                tw:L.twinkle, ph:Math.random()*Math.PI*2,
+              });
+            }
+          }
+          galaxies = (W <= 900) ? [] : GALAXY_DEFS.map(seedGalaxy);
+        };
+        const resize = ()=>{
+          W = window.innerWidth; H = window.innerHeight;
+          canvas.width = W*dpr; canvas.height = H*dpr;
+          canvas.style.width = W+'px'; canvas.style.height = H+'px';
+          ctx.setTransform(dpr,0,0,dpr,0,0);
+          seed();
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        let raf = 0, start = performance.now();
+        const render = (now)=>{
+          const t = (now - start) / 1000;
+          ctx.clearRect(0,0,W,H);
+
+          // stars — pre-rendered star sprite (core + spikes), scaled per star
+          for(const s of stars){
+            s.x += s.vx; s.y += s.vy;
+            if(s.x < -5) s.x = W+5; else if(s.x > W+5) s.x = -5;
+            if(s.y < -5) s.y = H+5; else if(s.y > H+5) s.y = -5;
+            const tw = 1 - s.tw + s.tw * (.5 + .5*Math.sin(t*1.6 + s.ph));
+            ctx.globalAlpha = s.a0 * tw;
+            const size = 6 + s.r * 6;
+            ctx.drawImage(SPRITE, s.x - size/2, s.y - size/2, size, size);
+          }
+
+          // shooting star
+          if(!shooting && t > nextShoot){
+            shooting = { x:Math.random()*W*.6, y:Math.random()*H*.4, vx:6+Math.random()*3, vy:1.4+Math.random()*1.2, life:1 };
+            nextShoot = t + 6 + Math.random()*8;
+          }
+          if(shooting){
+            shooting.x += shooting.vx; shooting.y += shooting.vy; shooting.life -= .012;
+            const ang = Math.atan2(shooting.vy, shooting.vx);
+            const tailLen = 80;
+            const tx = shooting.x - tailLen*Math.cos(ang);
+            const ty = shooting.y - tailLen*Math.sin(ang);
+            const grad = ctx.createLinearGradient(shooting.x, shooting.y, tx, ty);
+            grad.addColorStop(0, `rgba(255,255,255,${Math.max(0,shooting.life)})`);
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1.4; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(shooting.x, shooting.y); ctx.lineTo(tx, ty); ctx.stroke();
+            if(shooting.life <= 0 || shooting.x > W+100 || shooting.y > H+100) shooting = null;
+          }
+
+          // galaxies (rare slow visitors — wrap to far off-screen after each crossing)
+          for(const g of galaxies){
+            g.x += g.vx / 60;
+            g.y += g.vy / 60;
+            const margin = g.R * 1.6;
+            // After exiting one side, drop the galaxy far off-screen on the opposite side
+            // so it stays invisible for a long time before the next crossing.
+            if(g.x < -margin) g.x = W + margin + (32 + Math.random()*22) * W;
+            else if(g.x > W + margin + 60*W) g.x = -margin - (32 + Math.random()*22) * W;
+            if(g.y < -margin) g.y = H + margin + (28 + Math.random()*22) * H;
+            else if(g.y > H + margin + 60*H) g.y = -margin - (28 + Math.random()*22) * H;
+            // Skip rendering entirely when far off-screen for performance
+            if(g.x < -margin || g.x > W + margin || g.y < -margin || g.y > H + margin) continue;
+
+            const def = g.def;
+            const rot = t * def.rotSpeed;
+            const R = g.R;
+            const p = def.palette;
+
+            ctx.save();
+            ctx.translate(g.x, g.y);
+            ctx.rotate(def.rotation);
+            ctx.scale(1, def.tilt);
+
+            // outer halo
+            const halo = ctx.createRadialGradient(0,0, R*.35, 0,0, R*1.25);
+            halo.addColorStop(0, p.halo+'0)');
+            halo.addColorStop(.4, p.halo+'.18)');
+            halo.addColorStop(.7, p.halo+'.10)');
+            halo.addColorStop(1, p.halo+'0)');
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = halo;
+            ctx.beginPath(); ctx.arc(0,0, R*1.25, 0, Math.PI*2); ctx.fill();
+
+            // mid glow
+            const mid = ctx.createRadialGradient(0,0,0, 0,0, R*.78);
+            mid.addColorStop(0, p.mid+'.55)');
+            mid.addColorStop(.25, p.mid2+'.38)');
+            mid.addColorStop(.55, p.outer+'.18)');
+            mid.addColorStop(1, p.halo+'0)');
+            ctx.fillStyle = mid;
+            ctx.beginPath(); ctx.arc(0,0, R*.78, 0, Math.PI*2); ctx.fill();
+
+            // nebula blobs
+            ctx.globalCompositeOperation = 'lighter';
+            for(const n of g.nebulae){
+              const a = n.a0 + rot * (1 + (R - n.r0)/R * .25);
+              const nx = Math.cos(a) * n.r0;
+              const ny = Math.sin(a) * n.r0;
+              const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, n.blobR);
+              grad.addColorStop(0, (p[n.key]||p.mid)+n.alpha+')');
+              grad.addColorStop(1, (p[n.key]||p.mid)+'0)');
+              ctx.fillStyle = grad;
+              ctx.beginPath(); ctx.arc(nx, ny, n.blobR, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.globalCompositeOperation = 'source-over';
+
+            // core
+            const core = ctx.createRadialGradient(0,0,0, 0,0, R*.28);
+            core.addColorStop(0, p.core+'1)');
+            core.addColorStop(.18, p.core2+'.85)');
+            core.addColorStop(.42, p.accent+'.45)');
+            core.addColorStop(.75, p.mid2+'.18)');
+            core.addColorStop(1, p.outer+'0)');
+            ctx.fillStyle = core;
+            ctx.beginPath(); ctx.arc(0,0, R*.28, 0, Math.PI*2); ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(0,0, 3.2, 0, Math.PI*2); ctx.fill();
+
+            // stars in arms + halo
+            for(const s of g.stars){
+              const ang = s.a0 + rot * (1 + (R - s.r0)/R * .35);
+              const sx = Math.cos(ang) * s.r0;
+              const sy = Math.sin(ang) * s.r0;
+              const tw = .55 + .45*Math.sin(t*1.4 + s.ph);
+              ctx.globalAlpha = s.alpha * tw;
+              ctx.fillStyle = s.color;
+              ctx.beginPath();
+              ctx.arc(sx, sy, s.size, 0, Math.PI*2);
+              ctx.fill();
+            }
+
+            ctx.restore();
+            ctx.globalAlpha = 1;
+          }
+
+          ctx.globalAlpha = 1;
+          raf = requestAnimationFrame(render);
+        };
+        raf = requestAnimationFrame(render);
+        return ()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+      },[]);
+      return <canvas ref={ref} className="space-bg" aria-hidden="true" />;
+    }
+
     function Hero(){
       const portraitRef = useRef(null);
       // tilt on mouse
@@ -1043,7 +1330,7 @@
               <span className="ht-last">Dosapati</span>
             </h1>
             <p className="hero-tagline">
-              I build production GenAI systems, agents, and tools people actually use.
+              I build production GenAI systems, agents and tools people actually use.
             </p>
             <p className="hero-paragraph">
               I've spent six years writing Python and shipping LLM workflows, from RAG pipelines
@@ -1513,7 +1800,10 @@
         <section className="contact" id="contact">
           <div>
             <h2 className="contact-lead reveal">
-              Have something <span className="it">ambitious</span> in&nbsp;mind? <br/>
+              Have <br/>
+              something <br/>
+              <span className="it">ambitious</span> <br/>
+              in&nbsp;mind? <br/>
               <a href="mailto:kethandosapati@gmail.com" data-cursor>Let's&nbsp;talk.</a>
             </h2>
             <p style={{maxWidth:'48ch',color:'var(--fg-mute)',fontSize:16,lineHeight:1.6,marginTop:'32px'}}>
@@ -1684,6 +1974,7 @@
 
       return (
         <>
+          <SpaceBg />
           <Hero />
           <Proof />
           <About />
@@ -1743,14 +2034,14 @@
       const label = document.getElementById('cursor-label');
 
       if(fine){
-        let mx=0,my=0,rx=0,ry=0;
+        let mx=0,my=0;
         window.addEventListener('mousemove', e=>{
           mx=e.clientX; my=e.clientY;
-          cur.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-          label.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+          const tx = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+          cur.style.transform = tx;
+          ring.style.transform = tx;
+          label.style.transform = tx;
         });
-        const tick = ()=>{ rx += (mx-rx)*.18; ry += (my-ry)*.18; ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`; requestAnimationFrame(tick); };
-        requestAnimationFrame(tick);
 
         document.addEventListener('mouseover', e=>{
           const view = e.target.closest('[data-view]');
