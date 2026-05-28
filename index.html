@@ -307,6 +307,8 @@
     @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
     /* ─────────── HERO ─────────── */
+    .hero-wrap{min-height:100vh;display:flex;flex-direction:column}
+    .hero-wrap > .hero{flex:1 1 auto}
     .hero{
       display:grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(0, 360px);
@@ -359,10 +361,9 @@
     }
 
     .hero-tagline{
-      font-family:var(--sans),sans-serif;font-style:normal;font-weight:400;
-      font-size:clamp(20px, 2vw, 28px);
-      line-height:1.3;color:var(--fg);
-      margin:6px 0 0;max-width:none;
+      font-size:clamp(15px, 1.05vw, 16.5px);
+      color:var(--fg-mute);line-height:1.6;
+      max-width:none;margin:6px 0 0;
     }
 
     .hero-paragraph{
@@ -439,11 +440,12 @@
 
     /* ─────────── PROOF STATS BAR ─────────── */
     .proof{
-      max-width:var(--maxw);margin:0 auto;padding:28px var(--pad-x);
+      width:100%;margin:0;padding:28px var(--pad-x);
       border-top:1px solid var(--line);border-bottom:1px solid var(--line);
       display:grid;grid-template-columns:repeat(5,1fr);gap:24px;
     }
     @media (max-width:980px){ .proof{grid-template-columns:repeat(2,1fr);gap:32px} }
+    @media (max-width:760px){ .proof{display:none} }
     .proof-row{display:flex;flex-direction:column;gap:4px;border-left:1px solid var(--line);padding-left:18px}
     .proof-row:first-child{border-left:0;padding-left:0}
     @media (max-width:980px){.proof-row{border-left:0;padding-left:0}}
@@ -472,8 +474,9 @@
     .sh{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:80px}
     @media (max-width:760px){ .sh{grid-template-columns:1fr;gap:24px;margin-bottom:48px} }
     .sh h2{
-      font-family:var(--serif),serif;font-weight:400;font-size:clamp(40px,5.4vw,80px);line-height:.95;letter-spacing:-.025em;margin:0;
+      font-family:var(--serif),serif;font-weight:400;font-size:clamp(40px,5.4vw,80px);line-height:.95;letter-spacing:-.025em;margin:0;white-space:nowrap;
     }
+    @media (max-width:760px){ .sh h2{white-space:normal} }
     .sh h2 .it{font-style:italic;color:var(--fg-mute)}
     .sh-side{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--fg-mute);max-width:42ch;justify-self:end}
     @media (max-width:760px){ .sh-side{justify-self:start} }
@@ -499,8 +502,8 @@
     .about-prose strong{font-weight:400;font-style:italic;color:var(--accent)}
 
     /* ─────────── BEST WORK · FEATURE CARDS ─────────── */
-    .best-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-    @media (max-width:760px){.best-grid{grid-template-columns:1fr}}
+    .best-grid{display:grid;grid-template-columns:1fr;gap:32px}
+    @media (min-width:1280px){.best-grid{grid-template-columns:1fr 1fr;gap:24px}}
     .feature{
       position:relative;display:flex;flex-direction:column;
       border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--bg-card);
@@ -515,8 +518,10 @@
     .feature-art .domain{position:absolute;bottom:22px;left:22px;font-family:var(--mono),monospace;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:5px 10px;border-radius:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:3;letter-spacing:.02em}
 
     .feature-body{padding:48px 56px 52px;display:flex;flex-direction:column;gap:32px}
+    @media (max-width:760px){ .feature-body{padding:32px 24px 36px;gap:24px} .feature-highlights{grid-template-columns:1fr} }
     .feature-headline{display:flex;flex-direction:column;gap:14px;max-width:38ch}
-    .feature-title{font-family:var(--serif),serif;font-size:clamp(48px,5.4vw,76px);font-weight:400;letter-spacing:-.025em;line-height:.95;color:var(--fg);margin:0}
+    .feature-title{font-family:var(--serif),serif;font-size:clamp(48px,5.4vw,76px);font-weight:400;letter-spacing:-.025em;line-height:.95;color:var(--fg);margin:0;white-space:nowrap}
+    @media (max-width:540px){ .feature-title{white-space:normal} }
     .feature-tagline{font-family:var(--serif-2),serif;font-style:italic;font-size:clamp(20px,2vw,26px);color:var(--accent);line-height:1.3;margin:0;font-weight:400}
 
     .feature-info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0}
@@ -539,6 +544,8 @@
 
     /* ─────────── MORE PROJECTS · COMPACT ROWS ─────────── */
     .projects-list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+    .more-actions{display:flex;justify-content:center;margin-top:32px}
+    .more-actions .btn{cursor:pointer;background:transparent}
     .row{position:relative;display:grid;grid-template-columns:60px 1fr auto auto;gap:28px;
       padding:26px 0;border-bottom:1px solid var(--line);align-items:center;
       transition:padding .3s var(--ease),background .3s}
@@ -702,7 +709,7 @@
       .hero-portrait{max-width:200px;aspect-ratio:4/4.2}
       .hero-portrait::before,.hero-portrait::after{content:none}
       .hero-title{font-size:clamp(44px,12vw,84px);letter-spacing:.01em;line-height:.92}
-      .hero-tagline{font-size:clamp(18px,4.6vw,22px);max-width:none}
+      .hero-tagline{font-size:15px;max-width:none}
       .hero-paragraph{font-size:15px}
       .hero-eyebrow{font-size:10.5px;gap:8px}
       .hero-actions{gap:10px}
@@ -837,17 +844,54 @@
       },
       {
         n: '03',
-        title: 'Permit Routing System',
-        badge: 'Internal · Cornerstone Tech',
-        domain: 'cornerstone, internal platform',
+        title: 'YantraBodha',
+        badge: 'Open source · MCP · PyPI',
+        domain: 'pypi.org/project/yantrabodha-mcp',
         year: '2025',
-        desc: 'Geospatial routing for trucking permits. OSRM and Google Maps work together to resolve origins and destinations, compute distance, and keep routes continuous across the workflow.',
-        stack: ['Python','FastAPI','OSRM','Google Maps','Docker'],
-        links: [['Case study','#contact']],
-        art: 'map',
+        desc: 'A shared knowledge base for AI agents: bots submit debugging experiences and other agents search them via MCP server or REST. StackOverflow, but written by bots, for bots.',
+        stack: ['FastAPI','Python','Supabase','MCP','Render'],
+        links: [
+          ['GitHub','https://github.com/utsaaham/yantrabodha'],
+          ['PyPI','https://pypi.org/project/yantrabodha-mcp/'],
+          ['API','https://huggingface.co/spaces/DKethan/yantrabodha-api'],
+        ],
+        art: 'wrap',
       },
       {
         n: '04',
+        title: 'Gnanam',
+        badge: 'Open source · Agent tooling',
+        domain: 'github.com/utsaaham/gnanam',
+        year: '2025',
+        desc: 'A portable, language-agnostic memory system that lets AI coding agents onboard themselves, retain context across sessions, and hand off to other agents without re-explaining the project.',
+        stack: ['Markdown','Cursor','Claude Code','Windsurf'],
+        links: [['GitHub','https://github.com/utsaaham/gnanam']],
+        art: 'grid',
+      },
+      {
+        n: '05',
+        title: 'Anvesana',
+        badge: 'Open source · AI job assistant',
+        domain: 'github.com/utsaaham/anvesana',
+        year: '2025',
+        desc: 'An open-source AI assistant that tailors resumes, writes cover letters, and auto-fills job applications. Built end-to-end across a FastAPI backend, a Next.js front end, and OpenAI.',
+        stack: ['FastAPI','Next.js','TypeScript','MongoDB','OpenAI'],
+        links: [['GitHub','https://github.com/utsaaham/anvesana']],
+        art: 'rag',
+      },
+      {
+        n: '06',
+        title: 'ArXiv Trend Predictor',
+        badge: 'Research advisor',
+        domain: 'github.com/dkethan/arxiv-trend-predictor',
+        year: '2024',
+        desc: 'An AI research-idea advisor over arXiv: scores whether a paper is trending, surfaces relevant domains, and recommends keywords to improve submissions. Backed by a FastAPI pipeline with a Flutter and web client.',
+        stack: ['Python','FastAPI','Flutter','ML'],
+        links: [['GitHub','https://github.com/dkethan/arxiv-trend-predictor']],
+        art: 'pose',
+      },
+      {
+        n: '07',
         title: 'Wrapper4AI',
         badge: 'Open source · PyPI',
         domain: 'pypi.org/project/wrapper4ai',
@@ -861,18 +905,7 @@
         art: 'wrap',
       },
       {
-        n: '05',
-        title: 'Base AI Tool Builder',
-        badge: 'GenAI platform',
-        domain: 'multi-tenant',
-        year: '2025',
-        desc: 'A platform that combines real-time chat, RAG-based document intelligence, and scraping, all under one mobile-first UI.',
-        stack: ['FastAPI','MongoDB','React 18','MUI','Tailwind'],
-        links: [['Walkthrough','https://www.loom.com/share/97c1289b70d44d0ab0f0e9249165fa20']],
-        art: 'rag',
-      },
-      {
-        n: '06',
+        n: '08',
         title: 'UI4AI',
         badge: 'Open source · PyPI',
         domain: 'pypi.org/project/ui4ai',
@@ -886,7 +919,18 @@
         art: 'grid',
       },
       {
-        n: '07',
+        n: '09',
+        title: 'Base AI Tool Builder',
+        badge: 'GenAI platform',
+        domain: 'multi-tenant',
+        year: '2025',
+        desc: 'A platform that combines real-time chat, RAG-based document intelligence, and scraping, all under one mobile-first UI.',
+        stack: ['FastAPI','MongoDB','React 18','MUI','Tailwind'],
+        links: [['Walkthrough','https://www.loom.com/share/97c1289b70d44d0ab0f0e9249165fa20']],
+        art: 'rag',
+      },
+      {
+        n: '10',
         title: 'AI Trainer',
         badge: 'Computer vision',
         domain: 'real-time CV',
@@ -895,6 +939,111 @@
         stack: ['Python','OpenCV','MediaPipe','FastAPI'],
         links: [['GitHub','https://github.com/DKethan/AI-Trainer']],
         art: 'pose',
+      },
+      {
+        n: '11',
+        title: 'Vyavastha',
+        badge: 'Game · Godot',
+        domain: 'github.com/utsaaham/vyavastha',
+        year: '2025',
+        desc: 'A 3D village-simulation and exploration game. Manage a small gramam, gather resources, farm, trade, and expand the settlement through strategic decisions.',
+        stack: ['Godot 4.6','GDScript'],
+        links: [['GitHub','https://github.com/utsaaham/vyavastha']],
+        art: 'grid',
+      },
+      {
+        n: '12',
+        title: 'IPL Score Stream',
+        badge: 'Live ML demo',
+        domain: 'huggingface.co/spaces/DKethan/IPL_Score_Stream',
+        year: '2024',
+        desc: 'A live IPL match score and win-probability stream. Pulls ball-by-ball data and serves predictions through a HuggingFace Space.',
+        stack: ['Python','Streamlit','ML'],
+        links: [
+          ['HF Space','https://huggingface.co/spaces/DKethan/IPL_Score_Stream'],
+          ['GitHub','https://github.com/dkethan/ipl_score_stream'],
+        ],
+        art: 'pulse',
+      },
+      {
+        n: '13',
+        title: 'Mini-GPT 4o SWE v1',
+        badge: 'Model · Qwen2',
+        domain: 'huggingface.co/DKethan/Mini-gpt-40-SWE-v1',
+        year: '2024',
+        desc: 'A compact 0.5B-parameter language model fine-tuned on a software-engineering set, built on the Qwen2 architecture and packaged in Safetensors.',
+        stack: ['Qwen2','PyTorch','Safetensors'],
+        links: [['HF Model','https://huggingface.co/DKethan/Mini-gpt-40-SWE-v1']],
+        art: 'wrap',
+      },
+      {
+        n: '14',
+        title: 'Sage',
+        badge: 'Agents · HF Space',
+        domain: 'huggingface.co/spaces/DKethan/Sage',
+        year: '2025',
+        desc: 'An agentic HuggingFace Space scaffold built on Gradio with OAuth, datasets, and the HF Hub. Aimed at a reusable agent surface for experimentation.',
+        stack: ['Gradio','Python','HF Hub'],
+        links: [['HF Space','https://huggingface.co/spaces/DKethan/Sage']],
+        art: 'grid',
+      },
+      {
+        n: '15',
+        title: 'Bodhidharma',
+        badge: 'HF Space',
+        domain: 'huggingface.co/spaces/DKethan/Bodhidharma',
+        year: '2024',
+        desc: 'A HuggingFace Space exploring small LLM and reasoning demos. Lightweight playground for prompt and model experiments.',
+        stack: ['Python','HF Spaces'],
+        links: [['HF Space','https://huggingface.co/spaces/DKethan/Bodhidharma']],
+        art: 'pose',
+      },
+      {
+        n: '16',
+        title: 'AI Critic',
+        badge: 'Evaluation · HF Space',
+        domain: 'huggingface.co/spaces/DKethan/AI-Critic',
+        year: '2024',
+        desc: 'A HuggingFace Space for critiquing AI-generated content: rates outputs, surfaces weaknesses, and gives structured feedback.',
+        stack: ['Python','HF Spaces'],
+        links: [['HF Space','https://huggingface.co/spaces/DKethan/AI-Critic']],
+        art: 'rag',
+      },
+      {
+        n: '17',
+        title: 'Duel Simulation',
+        badge: 'Agents · HF Space',
+        domain: 'huggingface.co/spaces/DKethan/Duel-Simulation',
+        year: '2024',
+        desc: 'A simulation that pits two AI agents against each other to test prompt strategies and head-to-head behavior.',
+        stack: ['Python','LLMs'],
+        links: [['HF Space','https://huggingface.co/spaces/DKethan/Duel-Simulation']],
+        art: 'wrap',
+      },
+      {
+        n: '18',
+        title: 'Text Generation',
+        badge: 'HF Space',
+        domain: 'huggingface.co/spaces/DKethan/Text-Generation',
+        year: '2024',
+        desc: 'A text-generation playground on HuggingFace Spaces. Gradio interface for experimenting with prompt styles and decoding settings.',
+        stack: ['Gradio','Python','LLMs'],
+        links: [['HF Space','https://huggingface.co/spaces/DKethan/Text-Generation']],
+        art: 'grid',
+      },
+      {
+        n: '19',
+        title: 'TF NN Models v1 & v2',
+        badge: 'Models · Keras',
+        domain: 'huggingface.co/DKethan',
+        year: '2024',
+        desc: 'Two Keras / TensorFlow neural-network models published to the HuggingFace Hub for reuse. v1 is the baseline, v2 the tuned successor.',
+        stack: ['Keras','TensorFlow','HF Hub'],
+        links: [
+          ['v1','https://huggingface.co/DKethan/my-tf-nn-model-v1'],
+          ['v2','https://huggingface.co/DKethan/my-tf-nn-model-v2'],
+        ],
+        art: 'pulse',
       },
     ];
 
@@ -941,10 +1090,10 @@
     ];
 
     const STACK_COLS = [
-      { h:'Languages', items:['Python','TypeScript','JavaScript','SQL'] },
-      { h:'AI and ML', items:['OpenAI','Gemini','Anthropic','LangChain','RAG','Agents and MCP','Embeddings'] },
-      { h:'Stack',     items:['FastAPI','React and Next','Node','MongoDB','Postgres','Vector DBs','Tailwind'] },
-      { h:'Ops',       items:['Docker','AWS','Google Cloud','CI/CD','Playwright','Selenium'] },
+      { h:'Languages', items:['Python','TypeScript','JavaScript','SQL','Dart','GDScript','Bash'] },
+      { h:'AI and ML', items:['OpenAI','Gemini','Anthropic','LangChain','RAG','Agents and MCP','Embeddings','Vector search','Fine-tuning','Hugging Face','PyTorch','TensorFlow / Keras','OpenCV','MediaPipe'] },
+      { h:'Stack',     items:['FastAPI','React and Next','Node','MongoDB','Postgres','Supabase','Vector DBs','Tailwind','MUI','Streamlit','Gradio','Flutter','NextAuth','JWT'] },
+      { h:'Ops',       items:['Docker','AWS','Google Cloud','Vercel','Render','GitHub Actions','CI/CD','Linux','Playwright','Selenium','Git / Git LFS','MCP server'] },
     ];
 
     const PACKAGES = [
@@ -1323,18 +1472,14 @@
               <span className="sep">·</span>
               <span>New Jersey</span>
               <span className="sep">·</span>
-              <span>Open Summer 2026</span>
+              <span>Open to GenAI Engineer, Forward Deployed Engineer, Data Engineer</span>
             </div>
             <h1 className="hero-title">
               <span className="ht-first">Kethan</span>
               <span className="ht-last">Dosapati</span>
             </h1>
             <p className="hero-tagline">
-              I build production GenAI systems, agents and tools people actually use.
-            </p>
-            <p className="hero-paragraph">
-              I've spent six years writing Python and shipping LLM workflows, from RAG pipelines
-              and multi-agent systems all the way up to the front-end people see.
+              AI Engineer | End-to-End Systems Design | Gen AI, RAG, Agents, MCP, LLM Orchestration | Full-Stack (Frontend, Backend, Database, Deployment) | CI/CD | DevOps | GitHub
             </p>
             <div className="hero-actions">
               <a className="btn btn-primary magnetic" href={'#contact'} data-cursor>
@@ -1386,21 +1531,20 @@
         <section className="section" id="about">
           <div className="sh reveal">
             <h2><span className="it">A bit</span> about me.</h2>
-            <div className="sh-side">
-              <p>Six years building, two and a half of those in production. I like working at the intersection of backend, LLM workflows, and the user-facing parts that decide whether anyone actually uses the thing.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="about-wrap">
             <dl className="about-meta">
               <div><dt>Based</dt><dd>New Jersey, USA</dd></div>
-              <div><dt>Role</dt><dd>AI Engineer</dd></div>
-              <div><dt>Focus</dt><dd>Production GenAI, agents, full-stack</dd></div>
-              <div><dt>Open to</dt><dd>Senior AI, Applied AI, Founding eng</dd></div>
+              <div><dt>Role</dt><dd>AI Engineer, end-to-end systems</dd></div>
+              <div><dt>Focus</dt><dd>GenAI, RAG, Agents, MCP, LLM orchestration</dd></div>
+              <div><dt>Stack</dt><dd>Python, FastAPI, React, Postgres, AWS, CI/CD</dd></div>
+              <div><dt>Open to</dt><dd>AI Engineer, GenAI Engineer, ML / LLM Engineer, Founding Engineer, Forward Deployed Engineer, Solutions Engineer, AI Data Engineer</dd></div>
               <div><dt>Languages</dt><dd>English, Telugu, Hindi</dd></div>
             </dl>
             <div className="about-prose reveal">
-              <p>My work usually sits where <strong>backend engineering</strong>, <strong>LLM workflows</strong>, product thinking, and deployment meet. I genuinely like all four parts.</p>
-              <p>I tend to be the person who designs the prompt, writes the FastAPI service, ships the React UI, and gets it onto AWS. That's not a flex. It's just the only way I've found to make AI products that hold together once real people start using them.</p>
+              <p>Most of my work is just trying to make <strong>AI</strong> actually useful for someone. That usually pulls me through the whole thing. A bit of <strong>RAG</strong> here, an agent there, a small <strong>MCP</strong> tool, and the UI someone will actually open. The model call is rarely the hard part. Everything around it is.</p>
+              <p>So on a normal day I'm writing a prompt, then a <strong>FastAPI</strong> route, then a database query, then a <strong>React</strong> screen, then pushing it up so it's live for someone to break. I like doing all of it. It's also the only way I've found to ship something that survives real users.</p>
             </div>
           </div>
         </section>
@@ -1452,7 +1596,6 @@
                 <circle key={i} cx={x} cy={y} r="3" fill="var(--accent)" opacity=".6"/>
               ))}
             </g>
-            <text x="40" y="420" fill="var(--accent)" fontFamily="JetBrains Mono" fontSize="11" letterSpacing="2">RETRIEVAL · GROUNDED · CITED</text>
           </svg>
         );
         case 'pulse': return (
@@ -1471,8 +1614,6 @@
               <circle r="50" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="2 6"/>
               <circle r="30" fill="none" stroke="rgba(200,255,63,0.4)" strokeWidth="1"/>
             </g>
-            <text x="40" y="80" fill="#fff" fontFamily="Instrument Serif" fontSize="40" fontStyle="italic">live · vitals</text>
-            <text x="40" y="100" fill="#666" fontFamily="JetBrains Mono" fontSize="11" letterSpacing="2">NLP → INSIGHT → ACTION</text>
           </svg>
         );
         case 'map': return (
@@ -1612,26 +1753,29 @@
 
     function Feature({ p }){
       return (
-        <div className="pkg reveal">
-          <div className="pkg-head">
-            <div className="pkg-title">{p.title}</div>
-            <span className="pkg-pill">{p.badge}</span>
+        <article className="feature reveal">
+          <div className="feature-art">
+            <CaseArt kind={p.art} />
+            <span className="badge-top">{p.badge}</span>
+            <span className="year-tr">{p.year}</span>
           </div>
-          <p className="pkg-desc">{p.tagline || p.desc}</p>
-          <div className="pkg-metrics">
-            <div className="pkg-metric"><b>Live</b><span>in production</span></div>
-            <div className="pkg-metric"><b>{p.year}</b><span>shipped</span></div>
-            <div className="pkg-metric"><b>{p.stack.length}</b><span>stack items</span></div>
+          <div className="feature-body">
+            <div className="feature-headline">
+              <h3 className="feature-title">{p.title}</h3>
+              {p.tagline && <p className="feature-tagline">{p.tagline}</p>}
+            </div>
+            <div className="feature-stack">
+              {p.stack.slice(0,5).map(s=><span key={s}>{s}</span>)}
+            </div>
+            <div className="feature-actions">
+              {p.links.map(([l,h,kind])=>(
+                <a key={l} className={(kind==='primary'?'btn btn-primary':'btn btn-ghost')+' magnetic'} href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
+                  {l} <span className="arrow"></span>
+                </a>
+              ))}
+            </div>
           </div>
-          <div className="pkg-links">
-            {p.links.map(([l,h])=>(
-              <a key={l} className="clink" href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
-                {l}
-                <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 8L8 2M8 2H3.5M8 2v4.5"/></svg>
-              </a>
-            ))}
-          </div>
-        </div>
+        </article>
       );
     }
 
@@ -1640,9 +1784,7 @@
         <section className="section" id="work">
           <div className="sh reveal">
             <h2><span className="it">Best</span> work.</h2>
-            <div className="sh-side">
-              <p>The two projects below are the ones I want you to actually open and try. Both are full-stack, both are live, both have me on the prompt, the API, the UI, and the deploy.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="best-grid">
             {BEST.map((p)=><Feature key={p.n} p={p} />)}
@@ -1655,7 +1797,7 @@
 
     function ProjectRow({ p }){
       return (
-        <a className="row reveal" href={p.links[0]?.[1] || '#'} target={p.links[0]?.[1]?.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
+        <a className="row" href={p.links[0]?.[1] || '#'} target={p.links[0]?.[1]?.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
           <span className="row-num">{p.n}</span>
           <div className="row-main">
             <h4 className="row-title">{p.title}</h4>
@@ -1668,17 +1810,24 @@
     }
 
     function MoreProjects(){
+      const [showAll, setShowAll] = useState(false);
+      const visible = showAll ? MORE : MORE.slice(0, 5);
       return (
         <section className="section" id="projects">
           <div className="sh reveal">
             <h2><span className="it">More</span> projects.</h2>
-            <div className="sh-side">
-              <p>A quick scroll through the rest. Internal platforms, computer vision work, and earlier builds.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="projects-list">
-            {MORE.map(p=><ProjectRow key={p.n} p={p} />)}
+            {visible.map(p=><ProjectRow key={p.n} p={p} />)}
           </div>
+          {MORE.length > 5 && (
+            <div className="more-actions reveal">
+              <button className="btn btn-ghost magnetic" onClick={()=>setShowAll(s=>!s)} data-cursor>
+                {showAll ? 'Show less' : `View all (${MORE.length})`} <span className="arrow"></span>
+              </button>
+            </div>
+          )}
         </section>
       );
     }
@@ -1690,9 +1839,7 @@
         <section className="section" id="experience">
           <div className="sh reveal">
             <h2><span className="it">Where</span> I've shipped.</h2>
-            <div className="sh-side">
-              <p>Three companies and one academic lab. A lot of LLM systems in production.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="timeline">
             {ROLES.map((r,i)=>(
@@ -1753,9 +1900,7 @@
         <section className="section" id="packages">
           <div className="sh reveal">
             <h2><span className="it">Open</span> packages.</h2>
-            <div className="sh-side">
-              <p>Two libraries I pulled out of real work and pushed up so nobody has to write them from scratch again.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="pkgs">
             {PACKAGES.map(p=><Pkg key={p.name} p={p} />)}
@@ -1771,9 +1916,7 @@
         <section className="section" id="stack">
           <div className="sh reveal">
             <h2><span className="it">The</span> stack.</h2>
-            <div className="sh-side">
-              <p>Picked to fit the problem, not the resume. Years of use shown where it actually matters.</p>
-            </div>
+            <div className="sh-side"></div>
           </div>
           <div className="stack-cols reveal">
             {STACK_COLS.map((col,i)=>(
@@ -1975,8 +2118,10 @@
       return (
         <>
           <SpaceBg />
-          <Hero />
-          <Proof />
+          <div className="hero-wrap">
+            <Hero />
+            <Proof />
+          </div>
           <About />
           <Experience />
           <BestWork />
