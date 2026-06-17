@@ -296,7 +296,7 @@
     @media (max-width:880px){ .nav-links{display:none} }
 
     /* Section scaffold */
-    .section{position:relative;padding:72px var(--pad-x);max-width:var(--maxw);margin:0 auto}
+    .section{position:relative;padding:72px var(--pad-x);max-width:var(--maxw);margin:0 auto;scroll-margin-top:96px}
     @media (max-width:760px){ .section{padding:56px var(--pad-x)} }
 
     .section-marker{display:none}
@@ -505,42 +505,48 @@
     .best-grid{display:grid;grid-template-columns:1fr;gap:32px}
     @media (min-width:1280px){.best-grid{grid-template-columns:1fr 1fr;gap:24px}}
     .feature{
-      position:relative;display:flex;flex-direction:column;
-      border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--bg-card);
-      transition:border-color .35s var(--ease),transform .5s var(--ease-out);isolation:isolate;
+      position:relative;display:flex;flex-direction:column;gap:22px;
+      border:1px solid var(--line);border-radius:24px;overflow:hidden;
+      padding:34px 36px 36px;
+      background:var(--bg-card);
+      transition:border-color .4s var(--ease),transform .5s var(--ease-out),box-shadow .5s var(--ease);
+      isolation:isolate;
     }
-    .feature:hover{border-color:var(--line-strong);transform:translateY(-4px)}
+    /* faint starfield texture inside the card — same universe as the hero */
+    .feature::before{
+      content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.55;
+      background-image:
+        radial-gradient(1px 1px at 18% 24%, rgba(255,255,255,.20), transparent),
+        radial-gradient(1px 1px at 82% 16%, rgba(255,255,255,.12), transparent),
+        radial-gradient(1px 1px at 66% 78%, rgba(255,255,255,.10), transparent),
+        radial-gradient(1.4px 1.4px at 34% 88%, rgba(200,255,63,.18), transparent),
+        radial-gradient(1.2px 1.2px at 92% 64%, rgba(133,211,255,.16), transparent);
+    }
+    .feature:hover{transform:translateY(-4px)}
+    @media (max-width:760px){ .feature{padding:26px 22px 28px;gap:18px} }
 
-    .feature-art{position:relative;width:100%;aspect-ratio: 21 / 9;overflow:hidden;background:var(--bg-elev);border-bottom:1px solid var(--line)}
-    .feature-art svg.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
-    .feature-art .badge-top{position:absolute;top:22px;left:22px;display:inline-flex;align-items:center;gap:10px;font-family:var(--mono),monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:rgba(0,0,0,.5);padding:6px 12px;border-radius:999px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:3}
-    .feature-art .year-tr{position:absolute;top:22px;right:22px;font-family:var(--serif),serif;font-style:italic;font-size:22px;color:#fff;background:rgba(0,0,0,.5);padding:4px 16px;border-radius:999px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:3;line-height:1.2}
-    .feature-art .domain{position:absolute;bottom:22px;left:22px;font-family:var(--mono),monospace;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:5px 10px;border-radius:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:3;letter-spacing:.02em}
+    /* head — category badge + year */
+    .feature-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .feature-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono),monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+    .feature-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(200,255,63,.16);animation:pulse 2.4s ease-in-out infinite}
+    .feature-year{font-family:var(--mono),monospace;font-size:11px;letter-spacing:.12em;color:var(--fg-dim)}
 
-    .feature-body{padding:48px 56px 52px;display:flex;flex-direction:column;gap:32px}
-    @media (max-width:760px){ .feature-body{padding:32px 24px 36px;gap:24px} .feature-highlights{grid-template-columns:1fr} }
-    .feature-headline{display:flex;flex-direction:column;gap:14px;max-width:38ch}
-    .feature-title{font-family:var(--serif),serif;font-size:clamp(48px,5.4vw,76px);font-weight:400;letter-spacing:-.025em;line-height:.95;color:var(--fg);margin:0;white-space:nowrap}
-    @media (max-width:540px){ .feature-title{white-space:normal} }
-    .feature-tagline{font-family:var(--serif-2),serif;font-style:italic;font-size:clamp(20px,2vw,26px);color:var(--accent);line-height:1.3;margin:0;font-weight:400}
+    /* headline — title + one-sentence pitch */
+    .feature-headline{display:flex;flex-direction:column;gap:9px}
+    .feature-title{font-family:var(--serif),serif;font-size:clamp(34px,3.6vw,52px);font-weight:500;letter-spacing:-.02em;line-height:1;color:var(--fg);margin:0}
+    .feature-pitch{font-family:var(--serif-2),serif;font-style:italic;font-size:clamp(15px,1.35vw,18px);color:var(--accent);line-height:1.4;margin:0;font-weight:400;max-width:48ch}
 
-    .feature-info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0}
-    .feature-info-cell{display:flex;flex-direction:column;gap:4px}
-    .feature-info-cell dt{font-family:var(--mono),monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim)}
-    .feature-info-cell dd{font-size:15px;font-weight:500;margin:0;color:var(--fg);font-family:var(--sans),sans-serif}
-
-    .feature-desc{font-size:17px;color:var(--fg);line-height:1.6;margin:0;max-width:62ch;font-weight:300}
-
-    .feature-highlights{display:grid;grid-template-columns:1fr 1fr;gap:24px 36px;margin:0}
-    .feature-highlight{display:flex;gap:14px;align-items:flex-start}
-    .feature-highlight .num{font-family:var(--mono),monospace;font-size:11px;color:var(--accent);letter-spacing:.06em;line-height:1.6;flex-shrink:0;width:22px;padding-top:1px}
-    .feature-highlight p{font-size:14.5px;color:var(--fg-mute);margin:0;line-height:1.55}
+    /* outcome-focused points */
+    .feature-points{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+    .feature-point{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;color:var(--fg-mute);line-height:1.45}
+    .feature-point .pt-mark{flex-shrink:0;margin-top:6px;width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 7px rgba(200,255,63,.65)}
 
     .feature-stack{display:flex;flex-wrap:wrap;gap:6px}
-    .feature-stack span{padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.03);font-family:var(--mono),monospace;font-size:10.5px;color:var(--fg-mute);letter-spacing:.02em}
+    .feature-stack span{padding:5px 11px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.03);font-family:var(--mono),monospace;font-size:10px;color:var(--fg-mute);letter-spacing:.03em}
     html[data-theme="light"] .feature-stack span{background:rgba(0,0,0,.025)}
 
-    .feature-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .feature-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:4px}
+    .feature-actions .btn{padding:11px 18px;font-size:10.5px}
 
     /* ─────────── MORE PROJECTS · COMPACT ROWS ─────────── */
     .projects-list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
@@ -568,12 +574,22 @@
     html[data-theme="light"] .clink:hover{background:rgba(0,0,0,.04)}
     .clink svg{width:9px;height:9px}
 
-    /* Feature art animations */
-    .feature:hover .art-pulse circle{animation:artPulse 1.8s ease-in-out infinite}
-    @keyframes artPulse{0%,100%{r:3px}50%{r:6px}}
-    .feature .art-spin{transform-origin:center;animation:artSpin 30s linear infinite}
+    /* Feature signature-visual animations — subtle, observatory-grade */
+    .feature .art-spin{transform-origin:center;animation:artSpin 60s linear infinite}
+    .feature:hover .art-spin{animation-duration:24s}
+    .feature .art-twinkle{animation:artTwinkle 3.4s ease-in-out infinite}
+    .feature .art-twinkle:nth-of-type(2n){animation-delay:.7s}
+    .feature .art-twinkle:nth-of-type(3n){animation-delay:1.5s}
+    @keyframes artTwinkle{0%,100%{opacity:.25}50%{opacity:1}}
+    .feature .art-core{transform-origin:center;animation:artCore 2.6s ease-in-out infinite}
+    @keyframes artCore{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1.12)}}
+    .feature .art-trace{stroke-dasharray:6 10;animation:artTrace 5s linear infinite}
+    .feature:hover .art-trace{animation-duration:2.2s}
+    @keyframes artTrace{to{stroke-dashoffset:-160}}
     @keyframes artSpin{to{transform:rotate(360deg)}}
-    .feature:hover .art-spin{animation-duration:8s}
+    @media (prefers-reduced-motion:reduce){
+      .feature .art-spin,.feature .art-twinkle,.feature .art-core,.feature .art-trace{animation:none}
+    }
 
     /* ─────────── EXPERIENCE ─────────── */
     .timeline{position:relative;padding-left:0}
@@ -645,7 +661,7 @@
     .stack-name{font-size:14px;font-weight:500}
 
     /* ─────────── CONTACT ─────────── */
-    .contact{padding:96px var(--pad-x) 60px;max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:80px;align-items:start}
+    .contact{padding:96px var(--pad-x) 60px;max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:80px;align-items:start;scroll-margin-top:96px}
     @media (max-width:980px){.contact{grid-template-columns:1fr;gap:40px}}
     .contact-lead{font-family:var(--serif),serif;font-size:clamp(34px,4.6vw,72px);line-height:1;letter-spacing:-.02em;font-weight:400;margin:0}
     .contact-lead .it{font-style:italic;color:var(--fg-mute)}
@@ -697,8 +713,8 @@
     html[data-accent="white"]{--accent:#f1efe9;--accent-soft:rgba(241,239,233,.10);--accent-ink:#0a0a0a}
 
     /* Density */
-    .density-compact .feature-body{padding:30px}
-    .density-comfy .feature-body{padding:52px}
+    .density-compact .feature{padding:26px 28px 28px;gap:18px}
+    .density-comfy .feature{padding:40px 44px 44px;gap:26px}
 
     /* ─────────── MOBILE TUNING ─────────── */
     @media (max-width:760px){
@@ -720,13 +736,8 @@
       .sh h2{font-size:clamp(34px,8.5vw,52px)}
       .about-meta div{padding-bottom:14px}
       .feature{border-radius:18px}
-      .feature-art{aspect-ratio: 4 / 3}
-      .feature-body{padding:30px;gap:24px}
-      .feature-title{font-size:clamp(38px,9vw,52px)}
-      .feature-tagline{font-size:18px}
-      .feature-info{grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 0}
-      .feature-info-cell dd{font-size:13px}
-      .feature-highlights{grid-template-columns:1fr;gap:14px}
+      .feature-title{font-size:clamp(30px,8vw,42px)}
+      .feature-pitch{font-size:15px}
       .feature-actions .btn{padding:11px 16px;font-size:10.5px}
       .row{padding:20px 0;gap:6px}
       .row-title{font-size:22px}
@@ -748,7 +759,7 @@
     }
     @media (max-width:420px){
       .hero-title{font-size:clamp(40px,13vw,68px)}
-      .feature-title{font-size:36px}
+      .feature-title{font-size:30px}
       .contact-lead{font-size:44px}
     }
   </style>
@@ -1556,66 +1567,109 @@
     function CaseArt({ kind }){
       // Each art piece is a custom abstract poster for the project.
       switch(kind){
-        case 'teach': return (
-          <svg className="bg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="gt" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0" stopColor="#1a1a1a"/>
-                <stop offset="1" stopColor="#0a0a0a"/>
-              </linearGradient>
-            </defs>
-            <rect width="800" height="450" fill="url(#gt)"/>
-            <g stroke="rgba(255,255,255,0.08)" fill="none">
-              {Array.from({length:18}).map((_,i)=>(<line key={i} x1="0" y1={25*i} x2="800" y2={25*i}/>))}
-              {Array.from({length:32}).map((_,i)=>(<line key={i} x1={25*i} y1="0" x2={25*i} y2="450"/>))}
-            </g>
-            {/* Document stack */}
-            <g transform="translate(120,80)">
-              <rect width="200" height="260" rx="6" fill="#161616" stroke="rgba(255,255,255,0.12)"/>
-              <rect width="200" height="260" rx="6" transform="translate(14,-12)" fill="#191919" stroke="rgba(255,255,255,0.10)"/>
-              <rect width="200" height="260" rx="6" transform="translate(28,-24)" fill="#1d1d1d" stroke="rgba(255,255,255,0.10)"/>
-              <g transform="translate(28,-24)" fill="#666">
-                <rect x="20" y="28" width="140" height="6" rx="3"/>
-                <rect x="20" y="44" width="160" height="4" rx="2" fill="#3a3a3a"/>
-                <rect x="20" y="56" width="100" height="4" rx="2" fill="#3a3a3a"/>
-                <rect x="20" y="80" width="120" height="4" rx="2" fill="#3a3a3a"/>
-                <rect x="20" y="92" width="150" height="4" rx="2" fill="#3a3a3a"/>
-              </g>
-              <g transform="translate(28,-24)" fill="var(--accent)" opacity=".9">
-                <rect x="20" y="120" width="60" height="6" rx="3"/>
-                <rect x="20" y="140" width="40" height="4" rx="2" opacity=".5"/>
-              </g>
-            </g>
-            {/* Q&A cluster */}
-            <g transform="translate(440,90)" className="art-pulse">
-              <circle cx="80" cy="80" r="50" fill="none" stroke="rgba(200,255,63,0.3)" strokeWidth="1"/>
-              <circle cx="80" cy="80" r="90" fill="none" stroke="rgba(200,255,63,0.15)" strokeWidth="1"/>
-              <circle cx="80" cy="80" r="130" fill="none" stroke="rgba(200,255,63,0.08)" strokeWidth="1"/>
-              <circle cx="80" cy="80" r="4" fill="var(--accent)"/>
-              {[[40,30],[120,40],[140,100],[100,140],[30,120],[60,170],[150,140]].map(([x,y],i)=>(
-                <circle key={i} cx={x} cy={y} r="3" fill="var(--accent)" opacity=".6"/>
+        case 'teach': {
+          /* Knowledge graph / neural constellation — a mind being mapped */
+          const core = [320,140];
+          const nodes = [[150,70],[125,195],[255,212],[432,78],[508,176],[388,205],[212,96],[470,135]];
+          const traces = [[432,78],[125,195],[470,135]];
+          const stars = [[60,40],[110,215],[560,58],[600,182],[498,40],[44,150],[300,28],[352,252],[228,250],[420,42],[572,120],[80,90]];
+          return (
+            <svg viewBox="0 0 640 280" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <radialGradient id="tg-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0" stopColor="rgba(200,255,63,0.24)"/>
+                  <stop offset="0.55" stopColor="rgba(200,255,63,0.05)"/>
+                  <stop offset="1" stopColor="transparent"/>
+                </radialGradient>
+                <radialGradient id="tg-neb" cx="28%" cy="82%" r="70%">
+                  <stop offset="0" stopColor="rgba(133,211,255,0.12)"/>
+                  <stop offset="1" stopColor="transparent"/>
+                </radialGradient>
+              </defs>
+              <rect width="640" height="280" fill="url(#tg-neb)"/>
+              <ellipse cx="320" cy="140" rx="210" ry="125" fill="url(#tg-glow)"/>
+              {stars.map(([x,y],i)=>(
+                <circle key={'s'+i} className="art-twinkle" cx={x} cy={y} r={i%3===0?1.6:1} fill={i%4===0?'var(--accent)':'#fff'}/>
               ))}
-            </g>
-          </svg>
-        );
-        case 'pulse': return (
-          <svg className="bg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
-            <rect width="800" height="450" fill="#0d0d0d"/>
-            <g stroke="rgba(255,255,255,0.06)" fill="none">
-              {Array.from({length:14}).map((_,i)=>(<line key={i} x1="0" y1={32*i} x2="800" y2={32*i}/>))}
-            </g>
-            {/* Vital line */}
-            <path d="M 0 230 L 120 230 L 140 200 L 160 260 L 200 230 L 280 230 L 300 130 L 320 320 L 340 230 L 460 230 L 480 200 L 500 260 L 520 230 L 800 230"
-                  fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
-            <path d="M 0 230 L 120 230 L 140 200 L 160 260 L 200 230 L 280 230 L 300 130 L 320 320 L 340 230 L 460 230 L 480 200 L 500 260 L 520 230 L 800 230"
-                  fill="none" stroke="var(--accent)" strokeWidth="6" opacity=".15"/>
-            {/* Data rings */}
-            <g transform="translate(640,120)" className="art-spin">
-              <circle r="50" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="2 6"/>
-              <circle r="30" fill="none" stroke="rgba(200,255,63,0.4)" strokeWidth="1"/>
-            </g>
-          </svg>
-        );
+              <g className="art-spin">
+                <ellipse cx="320" cy="140" rx="158" ry="96" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" strokeDasharray="2 7"/>
+              </g>
+              {/* edges from the core */}
+              <g stroke="rgba(200,255,63,0.26)" fill="none" strokeWidth="1.1">
+                {nodes.map(([x,y],i)=>(<line key={'e'+i} x1={core[0]} y1={core[1]} x2={x} y2={y}/>))}
+              </g>
+              {/* satellite-to-satellite links */}
+              <g stroke="rgba(255,255,255,0.10)" fill="none" strokeWidth="1">
+                <line x1="150" y1="70" x2="212" y2="96"/>
+                <line x1="432" y1="78" x2="470" y2="135"/>
+                <line x1="388" y1="205" x2="508" y2="176"/>
+                <line x1="255" y1="212" x2="125" y2="195"/>
+              </g>
+              {/* animated data traces */}
+              <g stroke="var(--accent)" fill="none" strokeWidth="1.5" strokeLinecap="round">
+                {traces.map(([x,y],i)=>(<line key={'t'+i} className="art-trace" x1={core[0]} y1={core[1]} x2={x} y2={y}/>))}
+              </g>
+              {/* satellite nodes */}
+              {nodes.map(([x,y],i)=>(
+                <g key={'n'+i}>
+                  <circle cx={x} cy={y} r={i%3===0?5:4} fill="#0c0e0a" stroke="var(--accent)" strokeWidth="1.4"/>
+                  <circle cx={x} cy={y} r="1.6" fill="var(--accent)"/>
+                </g>
+              ))}
+              {/* glowing core */}
+              <circle className="art-core" cx="320" cy="140" r="22" fill="url(#tg-glow)"/>
+              <circle cx="320" cy="140" r="8" fill="#0c0e0a" stroke="var(--accent)" strokeWidth="2"/>
+              <circle cx="320" cy="140" r="3.4" fill="var(--accent)"/>
+            </svg>
+          );
+        }
+        case 'pulse': {
+          /* Vital signal across the void — pulse + orbiting telemetry */
+          const stars = [[50,46],[120,210],[560,52],[604,176],[486,40],[40,140],[300,30],[352,250],[224,246],[210,40],[420,250],[600,110]];
+          const wave = "M 0 150 L 110 150 L 130 122 L 150 178 L 184 150 L 252 150 L 270 74 L 288 226 L 306 150 L 430 150 L 450 122 L 470 178 L 492 150 L 640 150";
+          return (
+            <svg viewBox="0 0 640 280" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <radialGradient id="pg-glow" cx="42%" cy="50%" r="55%">
+                  <stop offset="0" stopColor="rgba(200,255,63,0.18)"/>
+                  <stop offset="0.6" stopColor="rgba(200,255,63,0.04)"/>
+                  <stop offset="1" stopColor="transparent"/>
+                </radialGradient>
+                <radialGradient id="pg-neb" cx="80%" cy="30%" r="60%">
+                  <stop offset="0" stopColor="rgba(133,211,255,0.12)"/>
+                  <stop offset="1" stopColor="transparent"/>
+                </radialGradient>
+              </defs>
+              <rect width="640" height="280" fill="url(#pg-neb)"/>
+              <ellipse cx="280" cy="150" rx="240" ry="110" fill="url(#pg-glow)"/>
+              {stars.map(([x,y],i)=>(
+                <circle key={'s'+i} className="art-twinkle" cx={x} cy={y} r={i%3===0?1.6:1} fill={i%4===0?'var(--accent)':'#fff'}/>
+              ))}
+              {/* baseline */}
+              <line x1="0" y1="150" x2="640" y2="150" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="3 9"/>
+              {/* pulse glow + line */}
+              <path d={wave} fill="none" stroke="var(--accent)" strokeWidth="7" opacity=".14" strokeLinejoin="round" strokeLinecap="round"/>
+              <path d={wave} fill="none" stroke="var(--accent)" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round"/>
+              {/* travelling signal */}
+              <path className="art-trace" d={wave} fill="none" stroke="#eaffb0" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round"/>
+              {/* R-peak blip */}
+              <circle className="art-core" cx="279" cy="74" r="9" fill="url(#pg-glow)"/>
+              <circle cx="279" cy="74" r="3" fill="var(--accent)"/>
+              {/* orbiting telemetry */}
+              <g transform="translate(540,86)">
+                <g className="art-spin">
+                  <circle r="46" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="1" strokeDasharray="2 7"/>
+                  <circle cx="46" cy="0" r="2.6" fill="var(--accent-2)"/>
+                </g>
+                <g className="art-spin" style={{animationDirection:'reverse',animationDuration:'40s'}}>
+                  <circle r="28" fill="none" stroke="rgba(200,255,63,0.35)" strokeWidth="1"/>
+                </g>
+                <circle r="4" fill="#0c0e0a" stroke="var(--accent)" strokeWidth="1.6"/>
+                <circle r="1.6" fill="var(--accent)"/>
+              </g>
+            </svg>
+          );
+        }
         case 'map': return (
           <svg className="bg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
             <rect width="800" height="450" fill="#0c0c0c"/>
@@ -1752,28 +1806,33 @@
     /* ───────────────────────── BEST WORK ───────────────────────── */
 
     function Feature({ p }){
+      const points = (p.bullets || []).slice(0, 3);
       return (
         <article className="feature reveal">
-          <div className="feature-art">
-            <CaseArt kind={p.art} />
-            <span className="badge-top">{p.badge}</span>
-            <span className="year-tr">{p.year}</span>
+          <div className="feature-head">
+            <span className="feature-badge"><span className="dot"></span>{p.badge}</span>
+            <span className="feature-year">{p.year}</span>
           </div>
-          <div className="feature-body">
-            <div className="feature-headline">
-              <h3 className="feature-title">{p.title}</h3>
-              {p.tagline && <p className="feature-tagline">{p.tagline}</p>}
-            </div>
-            <div className="feature-stack">
-              {p.stack.slice(0,5).map(s=><span key={s}>{s}</span>)}
-            </div>
-            <div className="feature-actions">
-              {p.links.map(([l,h,kind])=>(
-                <a key={l} className={(kind==='primary'?'btn btn-primary':'btn btn-ghost')+' magnetic'} href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
-                  {l} <span className="arrow"></span>
-                </a>
+          <div className="feature-headline">
+            <h3 className="feature-title">{p.title}</h3>
+            {p.tagline && <p className="feature-pitch">{p.tagline}</p>}
+          </div>
+          {points.length > 0 && (
+            <ul className="feature-points">
+              {points.map((b,i)=>(
+                <li className="feature-point" key={i}><span className="pt-mark"></span><span>{b}</span></li>
               ))}
-            </div>
+            </ul>
+          )}
+          <div className="feature-stack">
+            {p.stack.slice(0,5).map(s=><span key={s}>{s}</span>)}
+          </div>
+          <div className="feature-actions">
+            {p.links.map(([l,h,kind])=>(
+              <a key={l} className={(kind==='primary'?'btn btn-primary':'btn btn-ghost')+' magnetic'} href={h} target={h.startsWith('http')?'_blank':undefined} rel="noopener" data-cursor>
+                {l} <span className="arrow"></span>
+              </a>
+            ))}
           </div>
         </article>
       );
